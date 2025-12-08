@@ -1,9 +1,12 @@
 my_input = open("example_day_3.txt", "r").read()
 
-updated_input = my_input.split("\n")
+updated_input = my_input.split("\n") #[176:178]
 # print(updated_input)
 
 def find_elem(elem, str_to_be_found):
+    """
+    mon problème vient d'ici parce que parfois il retourne des None
+    """
     for i in range(len(elem)):
         if elem[i] == str_to_be_found:
             # print("elem updated:", elem.replace(elem[i], "", 1))
@@ -34,88 +37,135 @@ result_p1 = list()
 for i in range(len(updated_input)-1):
     result_p1.append((find_biggest_two(updated_input[i])))
 
-# print(sum(result_p1))
+print((result_p1))
+print(sum(result_p1))
 
 
-def find_biggest_twelve(elem = updated_input[0], length=11):
-    first_line = []
-
-    for num in range(9, -1, -1):
-        if str(num) in elem:
-            new_elem = find_elem(elem,
-                    str(num))
-
-            if len(new_elem) > length:
-                # print(max(new_elem))
-                idx = new_elem.find(max(new_elem), len(new_elem))
-                # print((new_elem[idx:]))
-                if len((new_elem[idx:])) > (length-1):
-                    first_line.append(max(new_elem))
-                    print(first_line, new_elem)
-                    return first_line, new_elem
-                else:
-                    first_line.append(max(str(num)))
-                    print(first_line, new_elem)
-                    return first_line, new_elem
-
-            else:
-                next
+# ------------ Part 2 ------------
+# test = updated_input[0]
+# print(type(test), test)
 
 
+def test_len_and_possibility(test, length_next=10):
+    # je teste s'il y a un 9 d'abord et si la suite est supérieure à 10 (donc 11 ou plus)
+    """
+    comme parfois t peut être égal à None, ensuite ça bloque toute la chaîne.
+    """
+    for i in range(len(test), -1, -1):
+        t = (find_elem(test, str_to_be_found=f"{i}"))
+        if t != None:
+            # print(len(t))
+            # print(t)
+            if len(t) > length_next:
+                # print("possible")
+                return i, t
+        # else:
+        #     return -1
 
-first_line, new_elem = find_biggest_twelve(elem = updated_input[2], length=12)
-# print(first_line, new_elem)
-print()
-for i in range(11):
-    first_line, new_elem = find_biggest_twelve(elem = new_elem, length=10-i)
 
-# first_line, new_elem = find_biggest_twelve(elem = new_elem, length=8)
+def for_one_elem_in_list(test):
+    biggest_num = []
+    for idx in range(10, -1, -1):
+        try:
+            i, test = (test_len_and_possibility(test, idx))
+            # print(test)
+            # print("normal sc. i: ", i)
+            # print("test:", test)
+            # print()
+            biggest_num.append(i)
+            if idx == 0:
+                # print("test:", test)
+                # print("idx0 sc. i: ", max(test))
+                biggest_num.append(int(max(test)))
+                return test, biggest_num
+        except TypeError:
+            print()
+            # print(len(biggest_num))
+            print(len(test))
+            print(test, type(test))
+            # while len(biggest_num) < 12:
+            #     missing = 12-len(biggest_num)
+            #     print("missing", missing)
+            for j in range(len(test)):
+                # print("j", j)
+                i, test = test_len_and_possibility(test, missing-j)
+                # print("typeerror sc. i: ", i)
+                # print("test:", test)
+                """
+                ces deux lignes ne veulent pas marcher !!
+                """
+                if len(biggest_num) > 11:
+                    break
+            for i in test:
+                # print("typeerror sc. i: ", i)
+                # print("test:", test)
+                biggest_num.append(i)
+            # return test, biggest_num
+        # biggest_num+=str(i)
+
+    # print(biggest_num[:12])
+    return (biggest_num) #[:12])
+
+# biggest_num = for_one_elem_in_list(test)
+# print(biggest_num, ", ", len(biggest_num))
+
+# # test = "7769"
+# # for j in range(len(test)):
+# #     i, test = (test_len_and_possibility(test, missing))
+# #     print("i:", i)
+# #     print("t:", test)
 
 
-# for i in range(10):
-#     first_line, new_elem = find_biggest_twelve(elem = new_elem, length=10-i)
-#     print(first_line, new_elem)
-#     print()
+
+# print("typeerror sc. i: ", i)
+# print("test:", test)
+missing = 2
+k = 8
 
 
-"""
-it1 = find_biggest_twelve(elem = updated_input[1])
-print(it1[0])
+# test, big = for_one_elem_in_list(test)
+# print("test", test)
+# print("big", big)
+# find = find_elem(test, f"{k}")
+# # print("find elem", (find))
+# idx = (len(test)-len(find_elem(test, f"{k}")))-1
+# print(idx, test[idx])
+# print("test", test)
 
-it2 = find_biggest_twelve(elem=it1, length=10)
-print(it2[1])
 
-it3 = find_biggest_twelve(elem=it2, length=9)
-print(it3[2])
+# print("end:", test_len_and_possibility(test, missing-1))
+# print("i:", i)
+# print("t:", t)
 
-it4 = find_biggest_twelve(elem=it3, length=8)
-print(it4[3])
 
-it5 = find_biggest_twelve(elem=it4, length=7)
-print(it5[4])
+def get_result(updated_input):
+    big_nums = []
+    for i in range(len(updated_input)-1):
+        test = updated_input[i]
+        big = for_one_elem_in_list(test)
+        # print((big))
+        biggest = str()
+        for j in big:
+            biggest+=str(j)
+            print(biggest)
+            big_nums.append(int(biggest))
+    print(i, ",", int(biggest), ", ", len(biggest))
+        # print("-"*10)
+        # print()
 
-it6 = find_biggest_twelve(elem=it5, length=6)
-print(it6[5])
+    print()
+    print(sum(big_nums))
 
-it7 = find_biggest_twelve(elem=it6, length=5)
-print(it7[6])
+get_result(updated_input)
 
-it8 = find_biggest_twelve(elem=it7, length=4)
-print(it8[7])
+# 979 335 968 934 983 710 995 866 too high
+# 102 781 982 770 870 is too low
+# 168 798 209 055 492 is too low
 
-it9 = find_biggest_twelve(elem=it8, length=3)
-print(it9[8])
 
-it10 = find_biggest_twelve(elem=it9, length=2)
-print(it10[9])
+# 987654321111 / 987654321111
+# 811111111119 / 811111111119
+# 434234234278 / 43423423427
+# 888911112111 / 888911112111
 
-it11 = find_biggest_twelve(elem=it10, length=1)
-print(it11[10])
-
-it12 = find_biggest_twelve(elem=it11, length=0)
-print(it12[11])
-
-print()
-print(it12)
-print(max(it12))
-"""
+# 3121910778619 / 3121910778619
