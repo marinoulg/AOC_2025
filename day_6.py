@@ -4,6 +4,7 @@ import math
 my_input = open("example_day_6.txt", "r").read()
 new = my_input.split("\n")
 
+
 coordinates_spaces = []
 for idx in range(len(new)):
     for col in range(len(new[idx])):
