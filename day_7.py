@@ -1,7 +1,7 @@
 import pandas as pd
 import math
 
-my_input = open("example_day_7.txt", "r").read()
+my_input = open("day_7.txt", "r").read()
 new = my_input.split("\n")
 
 # print(new)
@@ -102,20 +102,55 @@ def get_all_traits(df):
             print(f"break at {_} iterations")
             break
     # print(df)
-    return df
+    return df, trait_droit
 
+def get_surrounding_coordinates_truc(coord, df):
+    """
+    A truc is splitted if:
+        - above truc: | (un trait)
+        - left of truc: | (un trait)
+        - right of truc: | (un trait)
+
+    coord = coordinates[0],
+    coord = (idx, col) --> 1 set of coordinates for 1 truc "^"
+    """
+    idx, col = coord
+
+    count = 0
+    if (df.loc[(idx-1, col)] == "|"): # above truc: | (un trait)
+        # print("1")
+        if (df.loc[(idx, col+1)] == "|"): # right of truc: | (un trait)
+            # print("2")
+            if (df.loc[(idx, col-1)] == "|"): # left of truc: | (un trait)
+                # print("3")
+                count+= 1
+    return count
 
 # --------------- My code --------------
 
+def get_part_1(day_7="example_day_7.txt"):
+    my_input = open(day_7, "r").read()
+    new = my_input.split("\n")
 
-df = create_df(new)
+    df = create_df(new)
 
-S = get_coordinates(df, "S")[0]
-df = go_straight(S, df)
+    S = get_coordinates(df, "S")[0]
+    df = go_straight(S, df)
 
-coordinates = get_coordinates(df, "^")
+    coordinates = get_coordinates(df, "^")
 
-df = surround_truc_with_traits(df, coordinates)
-df = get_all_traits(df)
+    df = surround_truc_with_traits(df, coordinates)
+    df, trait_droit = get_all_traits(df)
 
-print(df)
+    # print(df)
+
+    count = 0
+    for i in range(len(coordinates)):
+        c = get_surrounding_coordinates_truc(coordinates[i], df)
+        count += (c)
+
+    print(count)
+
+get_part_1()
+print()
+get_part_1("day_7.txt")
