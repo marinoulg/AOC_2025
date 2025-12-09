@@ -117,7 +117,6 @@ def extract_numbers_and_signs(df, separation_columns, modality="column"):
 
     return df, separation_columns, consolidated_maths
 
-
 def answer_part_1(my_input="day_6.txt"):
     my_input = open(my_input, "r").read()
     new = my_input.split("\n")
@@ -158,9 +157,9 @@ print(separation_lines)
 consolidated_maths = []
 """
 Semantics:
-        - until_last_num: column (or line) that is filled with blank spaces and "+" or "*"
-        - sep_avant: lower bound of the interval (evolving)
-        - sep_apres: upper bound of the interval (evolving)
+    - until_last_num: column (or line) that is filled with blank spaces and "+" or "*"
+    - sep_avant: lower bound of the interval (evolving)
+    - sep_apres: upper bound of the interval (evolving)
 """
 
 until_last_num = (df.shape[1]-1)-1 # -1 bc we start at 0, and -1 bc we discount the last column in this case
@@ -185,7 +184,7 @@ for idx in range(len(separation_lines)-1):
 
     cephalopod_math = []
     sign = str()
-    print(int(''.join(df.loc[sep_upper+1,:until_last_num])))
+    print(int(''.join(df.loc[sep_upper+1,:until_last_num]))) # pb here bc now we iterate at (0+1), then (1+1) etc until the former last one
 
     # for col in range((df.shape[1]-1)):
     #     print(col)
