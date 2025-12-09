@@ -108,6 +108,9 @@ def extract_numbers_and_signs(df, separation_columns, modality="column"):
 
     elif modality == "index":
         until_last_num = (df.shape[1]-1)
+        """
+        to be completed -- WIP
+        """
 
 
 
