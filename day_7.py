@@ -1,7 +1,7 @@
 import pandas as pd
 import math
 
-my_input = open("day_7.txt", "r").read()
+my_input = open("example_day_7.txt", "r").read()
 new = my_input.split("\n")
 
 # print(new)
@@ -161,3 +161,10 @@ get_part_1("day_7.txt")
 # ordre de grandeur between (6**2) and (7**2)
 # 6 : car 6 splitters in reality in example, if not consider that we always go left at the first one
 # et que we have 1 chance sur 2 d'aller à gauche ou bien à droite, hence "to the power of 2"
+
+# formule statistique probable existe, à trouver
+# lien possible avec les decisions trees
+
+df = create_df(new)
+# get_coordinates(df)
+print(df)
