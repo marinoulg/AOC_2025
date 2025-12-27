@@ -4,7 +4,6 @@ import math
 my_input = open("example_day_7.txt", "r").read()
 new = my_input.split("\n")
 
-# print(new)
 # --------------- My functions --------------
 
 def create_df(new):
@@ -16,7 +15,6 @@ def create_df(new):
         df.append(temp)
 
     df = (pd.DataFrame(df))
-    # print(df)
     return df
 
 def get_coordinates(df, to_find="@"):
@@ -35,12 +33,10 @@ def when_encounter_truc(S, df):
 
     if df.loc[S] == "^":
         df.loc[S[0], S[1]+1] = "|"
-        # count += 1
     else:
         print(False)
 
     if df.loc[S] == "^":
-        # print(S[0], S[0]-1)
         df.loc[S[0], S[1]-1] = "|"
     else:
         pass
@@ -64,17 +60,11 @@ def go_straight(trait, df, sign="|"):
     trait_droit = get_coordinates(df, "|")
     """
 
-    # print(df.loc[3,6])
-    # print("before condition:", (trait[0]+1, trait[1]))
     if df.loc[(trait[0]+1, trait[1])] != "^": #"== "." :
-        # print("trait:", (trait[0]+1, trait[1]))
-        # print((trait[0]+1, trait[1]))
         df.loc[(trait[0]+1, trait[1])] = sign
     else:
-        # print("no")
         return df
 
-    # print(df)
     return df
 
 def get_all_traits(df):
@@ -91,17 +81,13 @@ def get_all_traits(df):
         temp = len(trait_droit)
         for i in range(len(trait_droit)):
             if (trait_droit[i][0] != max_lines): # or (coord[1] != df.shape[1]):
-                # c+=1
                 df = go_straight(trait_droit[i], df, "|")
-                # print(True)
-            # else:
-                # print(False)
 
         trait_droit = get_coordinates(df, "|")
         if len(trait_droit) == temp:
-            print(f"break at {_} iterations")
+            # print(f"break at {_} iterations")
             break
-    # print(df)
+
     return df, trait_droit
 
 def get_surrounding_coordinates_truc(coord, df):
@@ -118,11 +104,8 @@ def get_surrounding_coordinates_truc(coord, df):
 
     count = 0
     if (df.loc[(idx-1, col)] == "|"): # above truc: | (un trait)
-        # print("1")
         if (df.loc[(idx, col+1)] == "|"): # right of truc: | (un trait)
-            # print("2")
             if (df.loc[(idx, col-1)] == "|"): # left of truc: | (un trait)
-                # print("3")
                 count+= 1
     return count
 
@@ -143,7 +126,6 @@ def get_part_1(day_7="example_day_7.txt"):
     df = surround_truc_with_traits(df, coordinates)
     df, trait_droit = get_all_traits(df)
 
-    # print(df)
 
     count = 0
     for i in range(len(coordinates)):
@@ -153,7 +135,7 @@ def get_part_1(day_7="example_day_7.txt"):
     print(count)
 
 get_part_1()
-print()
+print("---"*3)
 get_part_1("day_7.txt")
 
 # Part 2
@@ -167,4 +149,4 @@ get_part_1("day_7.txt")
 
 df = create_df(new)
 # get_coordinates(df)
-print(df)
+# print(df)
