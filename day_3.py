@@ -1,6 +1,6 @@
-my_input = open("example_day_3.txt", "r").read()
+# my_input = open("example_day_3.txt", "r").read()
 
-updated_input = my_input.split("\n") #[176:178]
+# updated_input = my_input.split("\n") #[176:178]
 # print(updated_input)
 
 def find_elem(elem, str_to_be_found):
@@ -14,7 +14,10 @@ def find_elem(elem, str_to_be_found):
             # print("True")
             return elem[i+1:]
 
-def find_biggest_two(elem = updated_input[0]):
+def find_biggest_two(elem):
+    """
+    elem = updated_input[0]
+    """
     first_line = []
 
     for num in range(9, -1, -1):
@@ -32,13 +35,19 @@ def find_biggest_two(elem = updated_input[0]):
 
     return int(first_line[0]+first_line[1])
 
+def result_1(text_file = "day_3.txt"):
+    my_input = open(text_file, "r").read()
 
-result_p1 = list()
-for i in range(len(updated_input)-1):
-    result_p1.append((find_biggest_two(updated_input[i])))
+    updated_input = my_input.split("\n") #[176:178]
 
-print((result_p1))
-print(sum(result_p1))
+    result_p1 = list()
+    for i in range(len(updated_input)-1):
+        result_p1.append((find_biggest_two(updated_input[i])))
+
+    # print((result_p1))
+    return (sum(result_p1))
+
+print(result_1())
 
 
 # ------------ Part 2 ------------
@@ -156,7 +165,7 @@ def get_result(updated_input):
     print()
     print(sum(big_nums))
 
-get_result(updated_input)
+# get_result(updated_input)
 
 # 979 335 968 934 983 710 995 866 too high
 # 102 781 982 770 870 is too low
