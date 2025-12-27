@@ -1,55 +1,59 @@
 import pandas as pd
 
-my_input = open("day_5.txt", "r").read()
-new = my_input.split("\n")
-# print(new)
+def get_ranges(text_file="example_day_5.txt"):
+    """
+    get the ranges in the text_file
+    """
+    my_input = open(text_file, "r").read()
+    new = my_input.split("\n")
 
-list_1=list()
-list_2 = list()
-for i in range(len((new))):
-    if new[i] != '':
-        list_1.append(new[i])
-    else:
-        for idx in range(i+1, len((new))-1):
-            list_2.append(new[idx])
-        break
+    list_1=list()
+    list_2 = list()
+    for i in range(len((new))):
+        if new[i] != '':
+            list_1.append(new[i])
+        else:
+            for idx in range(i+1, len((new))-1):
+                list_2.append(new[idx])
+            break
 
-ranges_ = []
-for idx in range(len(list_1)):
-    a, b = list_1[idx].split("-")
-    ranges_.append([int(a), int(b)])
+    ranges_ = []
+    for idx in range(len(list_1)):
+        a, b = list_1[idx].split("-")
+        ranges_.append([int(a), int(b)])
 
-# print(ranges_)
+    return ranges_, list_2
 
-def part_1():
+def part_1(text_file="example_day_5.txt"):
+    """
+    Count the number of ingredients that are spoiled, aka NOT fresh.
+    """
+    ranges_, list_2 = get_ranges(text_file)
     count = 0
-
-    # Count the number of ingredients that are spoiled, aka NOT fresh
     for num in list_2:
         count_tmp = 0
         for ranges in ranges_:
             if int(num) < ranges[0] or int(num) > ranges[1]:
                 count_tmp += 1
         if count_tmp == len(ranges_):
-            print(f"{num} not in any ranges")
             count += 1
-        else:
-            print(f"{num} is fresh")
 
-
-    print("total count of spoiled is: ", count)
-    print()
     print("total count of FRESH is: ", (len(list_2))-count)
+    return len(list_2)-count
+
+print(part_1("day_5.txt"))
+
+# ---------------- Part 2 ----------------
 
 # (part_1())
 
-df = pd.DataFrame(ranges_)
-df = df.sort_values(by=0)
-df.drop_duplicates(inplace=True)
-print(df)
+# df = pd.DataFrame(ranges_)
+# df = df.sort_values(by=0)
+# df.drop_duplicates(inplace=True)
+# print(df)
 print()
 
-print(df.shape)
+# print(df.shape)
 # print()
 
 def reset_ranges(df):
@@ -174,3 +178,7 @@ print(sum(df["+1"]-df[0]))
 
 # il faut tweeker le code pour sort by col "1" en ordonné aussi
 # 344123646800056
+# 304 381 322 684 534 not the correct answer
+# 304 381 322 684 534
+# 353 376 608 341 030
+# 387 392 299 327 819
