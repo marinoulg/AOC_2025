@@ -46,6 +46,8 @@ def part_1():
 df = pd.DataFrame(ranges_)
 df = df.sort_values(by=0)
 df.drop_duplicates(inplace=True)
+print(df)
+print()
 
 print(df.shape)
 # print()
@@ -55,8 +57,8 @@ def reset_ranges(df):
     df.reset_index(drop="index", inplace=True)
     for i in range((df.shape[0])-2):
         if (df.loc[i, 0] <  df.loc[i+1, 0] <  df.loc[i, 1]):
-            # print("index to be dropped is ", (i+1))
-            # print(f"{df.loc[i, 1]} is to be replaced by {df.loc[i+1, 1]}")
+            print("index to be dropped is ", (i+1))
+            print(f"{df.loc[i, 1]} is to be replaced by {df.loc[i+1, 1]}")
             df.loc[i, 1] = df.loc[i+1, 1]
             idx_to_be_dropped.append((i+1))
             # df = df.drop(index=i+1)
@@ -135,6 +137,15 @@ df.drop_duplicates(inplace=True)
 df.reset_index(drop="index", inplace=True)
 print(df.shape)
 
+"""
+df.sort_values(by=1, inplace = True)
+for _ in range(df.shape[0]):
+    print("iteration n°", _)
+    df = get_all_ranges_overlapping(df)
+    df.sort_values(by=0, inplace=True)
+print(df)
+"""
+
 df.to_csv("day_5.csv")
 df["+1"] = df[1]+1
 print(sum(df["+1"]-df[0]))
@@ -160,3 +171,6 @@ print(sum(df["+1"]-df[0]))
 # 344 322 275 609 331 not the right answer
 # 344 322 275 609 198 not the right answer
 # 344 322 275 609 331
+
+# il faut tweeker le code pour sort by col "1" en ordonné aussi
+# 344123646800056

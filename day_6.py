@@ -121,7 +121,7 @@ def answer_part_1(my_input="day_6.txt"):
     my_input = open(my_input, "r").read()
     new = my_input.split("\n")
     df = create_df(new)
-    # print(df)
+    print(df)
 
     df, separation_columns = get_separation_columns(df)
     df, separation_columns, consolidated_maths = extract_numbers_and_signs(df, separation_columns)
@@ -139,8 +139,8 @@ def answer_part_1(my_input="day_6.txt"):
 
     print(sum(total))
 
-# answer_part_1("example_day_6.txt")
-# print("---"*3)
+answer_part_1("example_day_6.txt")
+print("---"*3)
 # answer_part_1()
 
 # --------------- Part 2 --------------
@@ -174,17 +174,23 @@ print()
 print(int(''.join(df.loc[sep_upper+1,:until_last_num])))
 
 
-for idx in range(len(separation_lines)-1):
+for col in range((df.shape[1]-1)):
+    print(col)
 
-    sep_upper= separation_lines[idx]
-    sep_lower = separation_lines[idx+1]
-    print("sep_upper:", sep_upper)
-    print("sep_lower:", sep_lower)
+    for idx in range(len(separation_lines)-1):
+
+        sep_upper= separation_lines[idx]
+        sep_lower = separation_lines[idx+1]
+        print("sep_upper:", sep_upper)
+        print("sep_lower:", sep_lower)
 
 
-    cephalopod_math = []
-    sign = str()
-    print(int(''.join(df.loc[sep_upper+1,:until_last_num]))) # pb here bc now we iterate at (0+1), then (1+1) etc until the former last one
+#     cephalopod_math = []
+#     sign = str()
+    print(int(''.join(df.loc[sep_upper+1,:until_last_num]))) # pb here bc now we iterate at (3+1), then (7+1) etc until the former last one (in ex: line 12)
+#     # instead of iterating over each idx line
+
+
 
     # for col in range((df.shape[1]-1)):
     #     print(col)
