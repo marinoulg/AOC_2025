@@ -6,28 +6,44 @@
 def find_elem(elem, str_to_be_found):
     """
     mon problème vient d'ici parce que parfois il retourne des None
+    --> quand ma str_to_be_found n'existe pas dans la chaîne de characters
+
+    de plus, il ne détecte pas le dernier caractère de elem
     """
+    # print(range(len(elem)))
+    # breakpoint()
     for i in range(len(elem)):
         if elem[i] == str_to_be_found:
             # print("elem updated:", elem.replace(elem[i], "", 1))
-            # print(f"position of {elem[i]}:", i)
-            # print("True")
-            return elem[i+1:]
+            print(f"position of {elem[i]}:", i)
+            reminder = (len(elem)-i)
+            # print("reminder after this character:",reminder)
+            print("True")
+            if reminder != 0:
+                return elem[i+1:], reminder
+            else:
+                print("here")
+                return str(), reminder
+        else:
+            print(f"{str_to_be_found} cannot be found in {elem}")
+            next
+            return 0
 
 def find_biggest_two(elem):
     """
-    elem = updated_input[0]
+    default value : elem = updated_input[0]
     """
     first_line = []
 
     for num in range(9, -1, -1):
         if str(num) in elem:
-            new_elem = find_elem(elem,
+            new_elem, reminder = find_elem(elem,
                     str(num))
 
             if len(new_elem) > 0:
                 first_line.append(str(num))
                 for i in range(9, -1, -1):
+                    # second_iteration, reminder =
                     if find_elem(new_elem, str(i)) != None:
                         first_line.append(str(i))
             else:
@@ -35,7 +51,7 @@ def find_biggest_two(elem):
 
     return int(first_line[0]+first_line[1])
 
-def result_1(text_file = "day_3.txt"):
+def result_1(text_file = "example_day_3.txt"):
     my_input = open(text_file, "r").read()
 
     updated_input = my_input.split("\n") #[176:178]
@@ -43,11 +59,12 @@ def result_1(text_file = "day_3.txt"):
     result_p1 = list()
     for i in range(len(updated_input)-1):
         result_p1.append((find_biggest_two(updated_input[i])))
+        print()
 
     # print((result_p1))
     return (sum(result_p1))
 
-print(result_1())
+# print(result_1())
 
 
 # ------------ Part 2 ------------
@@ -55,22 +72,110 @@ print(result_1())
 # print(type(test), test)
 
 
+my_input = open("example_day_3.txt", "r").read()
+
+updated_input = my_input.split("\n") #[176:178]
+
+
+
+elem = updated_input[1]
+print(elem)
+print(elem[14])
+
+# a, rem = find_elem(elem, "9")
+# print(a)
+# print(rem)
+
+
+biggest_12_digits = []
+
+biggest = 9
+nb_of_digits_left_to_find = 10 # bigger than 10 means at least 11 characters, to which we had the first one (just found) --> 12 digits
+
+str_to_be_found=str(biggest)
+new_elem, reminder = (find_elem(elem, str_to_be_found))
+
+if reminder > nb_of_digits_left_to_find:
+    print("found element:", str_to_be_found)
+    print("reminder characters are:", new_elem)
+    print("reminder nb of char:", reminder)
+    biggest_12_digits.append(str_to_be_found)
+
+else:
+    str_to_be_found=str(biggest - 1)
+    new_elem, reminder = (find_elem(elem, str_to_be_found))
+
+    print("found element:", str_to_be_found)
+    print("reminder characters are:", new_elem)
+    print("reminder nb of char:", reminder)
+    biggest_12_digits.append(str_to_be_found)
+
+
+
+
+# print(biggest_12_digits)
+# print("new_elem:", new_elem)
+
+# breakpoint()
+new_elem = updated_input[1]
+
+"""
+list_to_be_browsed_through = []
+for i in range(9,-1,-1):
+    list_to_be_browsed_through.append(str(i))
+
+# print(list_to_be_browsed_through)
+
+for i in list_to_be_browsed_through:
+    # print(i)
+    try:
+        str_to_be_found = str(i)
+        new_elem, reminder = find_elem(new_elem, i)
+        print("new_elem:", new_elem)
+        print("reminder nb of char:", reminder)
+
+        # if str(i) in new_elem:
+        if reminder > nb_of_digits_left_to_find:
+            print("found element:", str_to_be_found)
+            print("reminder characters are:", new_elem)
+            print("reminder nb of char:", reminder)
+            biggest_12_digits.append(str_to_be_found)
+            nb_of_digits_left_to_find = nb_of_digits_left_to_find - 1
+    except TypeError:
+        print("TypeError for:", i)
+    print("new_elem:", new_elem)
+        # next
+    print()
+    #
+
+print(biggest_12_digits)
+"""
+
+
 def test_len_and_possibility(test, length_next=10):
-    # je teste s'il y a un 9 d'abord et si la suite est supérieure à 10 (donc 11 ou plus)
     """
+    Je teste s'il y a un 9 d'abord et si la suite de nombres (format string)
+    est supérieure à 10 (donc 11 ou plus chiffres/caractères ensuite).
+
     comme parfois t peut être égal à None, ensuite ça bloque toute la chaîne.
     """
-    for i in range(len(test), -1, -1):
-        t = (find_elem(test, str_to_be_found=f"{i}"))
+    list_to_be_browsed_through = []
+    for i in range(9,-1,-1):
+        list_to_be_browsed_through.append(str(i))
+
+    for i in list_to_be_browsed_through:
+        t, reminder = (find_elem(test, str_to_be_found=f"{i}"))
         if t != None:
             # print(len(t))
             # print(t)
-            if len(t) > length_next:
+            if reminder > length_next:
                 # print("possible")
                 return i, t
         # else:
         #     return -1
 
+# i, t = test_len_and_possibility(new_elem, 10)
+# print(i, t)
 
 def for_one_elem_in_list(test):
     biggest_num = []
