@@ -31,14 +31,12 @@ def get_separation_columns(df, modality="column"):
         dff = df.copy()
 
         for col in df.columns:
-            # print(col)
             new_series = pd.to_numeric(df[col], errors="coerce")
             dff[col] = new_series
 
 
         s = pd.Series((dff.isna().sum() == dff.shape[0]))
         separation_columns = (list(s[s==True].index))
-        # print("separation_columns:", separation_columns)
 
         return df, separation_columns
     elif modality == "index":
@@ -50,7 +48,7 @@ def get_separation_columns(df, modality="column"):
 
         s = pd.Series(((dff.T).isna().sum() == dff.shape[1]))
         separation_columns = (list(s[s==True].index))
-        # print(separation_columns)
+
         return df, separation_columns
 
 def clean_df_and_sep_columns(df, separation_columns, modality="column"):
@@ -82,37 +80,21 @@ def extract_numbers_and_signs(df, separation_columns, modality="column"):
 
     if modality == "column":
         until_last_num = (df.shape[0]-1)
-        print("until_last_num:", until_last_num)
 
         for col_idx in range(len(separation_columns)-1):
             sep_avant = separation_columns[col_idx]
             sep_apres = separation_columns[col_idx+1]
-            print("sep_avant:", sep_avant)
-            print("sep_apres:", sep_apres)
 
             cephalopod_math = []
-            # sign = str()
+
             for idx in range(until_last_num):
-                # idx = 2
-                print(df.loc[idx:until_last_num, sep_avant:(sep_apres-1)])
                 cephalopod_math.append(int(''.join(list(df.loc[idx, sep_avant:(sep_apres-1)]))))
 
-            print("cephalopod_math:", cephalopod_math)
             if sep_avant != 0:
                 sign = df.loc[until_last_num,sep_avant+1]
             else:
                 sign = df.loc[until_last_num,sep_avant]
-            print("sign:", sign)
-            print()
             consolidated_maths.append([cephalopod_math, sign])
-
-    elif modality == "index":
-        until_last_num = (df.shape[1]-1)
-        """
-        to be completed -- WIP
-        """
-
-
 
 
     return df, separation_columns, consolidated_maths
@@ -121,7 +103,6 @@ def answer_part_1(my_input="day_6.txt"):
     my_input = open(my_input, "r").read()
     new = my_input.split("\n")
     df = create_df(new)
-    print(df)
 
     df, separation_columns = get_separation_columns(df)
     df, separation_columns, consolidated_maths = extract_numbers_and_signs(df, separation_columns)
@@ -129,9 +110,8 @@ def answer_part_1(my_input="day_6.txt"):
     total = []
     for elem in range(len(consolidated_maths)):
         nums_list = (consolidated_maths[elem][0])
-        print(nums_list)
         sign = (consolidated_maths[elem][1])
-        print(sign)
+
         if sign == "+":
             total.append(sum(nums_list))
         elif sign == "*":
@@ -139,70 +119,61 @@ def answer_part_1(my_input="day_6.txt"):
 
     print(sum(total))
 
+print("answer_part_1:")
 answer_part_1("example_day_6.txt")
 print("---"*3)
-# answer_part_1()
+answer_part_1()
 
-# --------------- Part 2 --------------
-df = create_df(new)
-df = (df.T)
-df, separation_lines = get_separation_columns(df, modality="index")
-print(df)
-
-df, separation_lines = clean_df_and_sep_columns(df, separation_lines, modality="index")
-print(separation_lines)
-
-
-
-consolidated_maths = []
-"""
-Semantics:
-    - until_last_num: column (or line) that is filled with blank spaces and "+" or "*"
-    - sep_avant: lower bound of the interval (evolving)
-    - sep_apres: upper bound of the interval (evolving)
-"""
-
-until_last_num = (df.shape[1]-1)-1 # -1 bc we start at 0, and -1 bc we discount the last column in this case
-print("until_last_num:", until_last_num)
-print("my test")
-
-sep_upper = 3
-sep_lower = 7
-
-print((df.loc[sep_upper:sep_lower,:until_last_num]))
 print()
-print(int(''.join(df.loc[sep_upper+1,:until_last_num])))
+# --------------- Part 2 --------------
+def setup(text_file="example_day_6.txt"):
+    my_input = open(text_file, "r").read()
+    new = my_input.split("\n")
+    df = create_df(new)
+    df = (df.T)
+    df, separation_lines = get_separation_columns(df, modality="index")
+    df, separation_lines = clean_df_and_sep_columns(df, separation_lines, modality="index")
+    return df
 
+def get_list_of_nb(text_file="example_day_6.txt"):
+    df = setup(text_file)
+    df_bis = df[list(df.columns)[:-1]]
 
-for col in range((df.shape[1]-1)):
-    print(col)
+    my_list = []
+    big_list = []
+    idx_start = 0
 
-    for idx in range(len(separation_lines)-1):
+    while idx_start != df.shape[0]:
+        my_list = []
+        for idx in range(idx_start, df.shape[0]):
+            if ("".join(df_bis.loc[idx, :])).strip() != "":
+                my_list.append(int("".join(df_bis.loc[idx, :])))
+            else:
+                break
+        my_list.append((df.loc[idx_start, df.columns[-1]]))
+        big_list.append(my_list)
+        idx_start = idx + 1
+    return big_list
 
-        sep_upper= separation_lines[idx]
-        sep_lower = separation_lines[idx+1]
-        print("sep_upper:", sep_upper)
-        print("sep_lower:", sep_lower)
+def get_result_2(text_file="example_day_6.txt"):
 
+    df = setup(text_file)
+    big_list = get_list_of_nb(text_file)
+    # print(big_list)
 
-#     cephalopod_math = []
-#     sign = str()
-    print(int(''.join(df.loc[sep_upper+1,:until_last_num]))) # pb here bc now we iterate at (3+1), then (7+1) etc until the former last one (in ex: line 12)
-#     # instead of iterating over each idx line
+    total = []
+    for elem in range(len(big_list)):
+        nums_list = (big_list[elem][:-1])
+        sign = (big_list[elem][-1])
 
+        if sign == "+":
+            total.append(sum(nums_list))
+        elif sign == "*":
+            total.append(math.prod(nums_list))
 
+    print(sum(total))
 
-    # for col in range((df.shape[1]-1)):
-    #     print(col)
-    # #     # idx = 2
-    #     print(df.loc[idx:col, sep_avant:(sep_apres-1)])
-    #     cephalopod_math.append(int(''.join(list(df.loc[idx, sep_avant:(sep_apres-1)]))))
-
-    # print("cephalopod_math:", cephalopod_math)
-    # if sep_avant != 0:
-    #     sign = df.loc[until_last_num,sep_avant+1]
-    # else:
-    #     sign = df.loc[until_last_num,sep_avant]
-    # print("sign:", sign)
-    print()
-    # consolidated_maths.append([cephalopod_math, sign])
+print("answer_part_2:")
+get_result_2()
+print("---"*3)
+get_result_2("day_6.txt")
