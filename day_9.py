@@ -1,5 +1,6 @@
 import pandas as pd
 import math
+
 def create_df(text_file="example_day_9.txt"):
     my_input = open(text_file, "r").read()
     new = my_input.split("\n")
