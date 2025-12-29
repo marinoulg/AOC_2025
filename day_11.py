@@ -1,7 +1,9 @@
-def recursive_temp(my_dict, key="you"):
+def recursive_temp(my_dict, key="svr"):
     """
     returns a list of lists (each new list is the child of a node, if comparing to a decision tree)
     compiling each possible way.
+    as it is recursive and we create a new list called pair_of_keys at each new iteration of the recursivity,
+    we have lists inside of lists.
     """
     pair_of_keys = []
     for key in my_dict[key]:
@@ -14,12 +16,12 @@ def recursive_temp(my_dict, key="you"):
 
     return pair_of_keys
 
-def get_all_possibilities(my_dict):
+def get_all_possibilities(my_dict, key="svr"):
     """
     returns a proper list of each possible path, from "start" to "out".
     """
 
-    pair_of_keys = recursive_temp(my_dict)
+    pair_of_keys = recursive_temp(my_dict, key)
 
     all_lists = []
 
@@ -46,7 +48,7 @@ def get_all_possibilities(my_dict):
 
     return lists_1D
 
-def answer_part_1(text_file= "example_day_11.txt"):
+def answer_part_1(text_file= "example_day_11.txt", key="svr"):
     """
     compiles all steps to return the answer, aka the length of the 1D-list compiled.
     """
@@ -58,7 +60,5 @@ def answer_part_1(text_file= "example_day_11.txt"):
         temp = (new[i].split(": "))
         my_dict[temp[0]] = temp[1].split(" ")
 
-    lists_1D = get_all_possibilities(my_dict)
+    lists_1D = get_all_possibilities(my_dict, key)
     return len(lists_1D)
-
-print(answer_part_1("day_11.txt"))
