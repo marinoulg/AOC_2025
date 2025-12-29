@@ -62,3 +62,77 @@ def answer_part_1(text_file= "example_day_11.txt", key="svr"):
 
     lists_1D = get_all_possibilities(my_dict, key)
     return len(lists_1D)
+
+# ---------------- Part 2 ----------------
+
+def get_tree_options(text_file= "example_day_11_p2.txt"):
+
+    my_input = open(text_file, "r").read()
+    new = my_input.split("\n")[:-1]
+
+    my_dict = {}
+    for i in range(len(new)):
+        temp = (new[i].split(": "))
+        my_dict[temp[0]] = temp[1].split(" ")
+
+    tree = recursive_temp(my_dict, key="svr")
+    aa = [tree]
+    aa.insert(0, "svr")
+
+    return tree # aa ?
+
+def get_1D_options(text_file= "example_day_11_p2.txt"):
+    """
+    la logique c'est :
+    si juste derrière y'a une liste, juste avant y'a un node
+
+    WIP
+    """
+    tree = get_tree_options(text_file)
+
+
+# Possibilities ?
+
+
+def get_first_nodes(tree):
+    nodes = []
+    for i in range(len(tree)-1):
+        if isinstance(tree[i+1], list):
+            nodes.append(tree[i])
+        # else:
+        #     print(tree[i+1])
+    return nodes
+
+def get_nodes_after(tree):
+    nodes = []
+    for i in range(len(tree)):
+        for j in range(len(tree[i])-1):
+            if isinstance(tree[i][j+1], list):
+                nodes.append(tree[i][j])
+        # else:
+        #     print(tree[i+1])
+    return nodes
+
+
+text_file= "example_day_11_p2.txt"
+
+my_input = open(text_file, "r").read()
+new = my_input.split("\n")[:-1]
+
+my_dict = {}
+for i in range(len(new)):
+    temp = (new[i].split(": "))
+    my_dict[temp[0]] = temp[1].split(" ")
+
+tree = recursive_temp(my_dict, key="svr")
+
+nodes = get_first_nodes(tree)
+print("nodes 1", nodes)
+
+new_tree = tree.copy()
+for elem in new_tree:
+    if elem in nodes:
+        new_tree.remove(elem)
+
+nodes = get_nodes_after(new_tree)
+print("nodes 2", nodes)
