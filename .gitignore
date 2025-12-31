@@ -1,3 +1,6 @@
 *.txt
 *.csv
 *.ipynb
+Exercises/
+.DS_Store
+__pycache__/
