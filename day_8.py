@@ -122,12 +122,20 @@ def answer_part_(text_file= "example_day_8.txt"):
 
 
 def answer_part_1(text_file="example_day_8.txt"):
+    """
+    half working - only on example --> needs to include all antinodes now
+        "geometry → integer vector stepping → set of points"
+
+    mid-work of all current steps (granted, could be better organised)
+    followed to get to the solution
+    """
 
     all_tuples = get_all_tuples(text_file)
 
     all_distances = set()
     all_distances_tuples = defaultdict(list)
 
+    # def get_ten_shortest_distances(text_file = "example_day_8.txt"):
     for j in range(len(all_tuples)):
         comparison_tuple = all_tuples[j]
 
@@ -146,6 +154,7 @@ def answer_part_1(text_file="example_day_8.txt"):
     sorted_list = sorted(all_distances)[:10]
     print("STEP 3 DONE - a list of 10 shortest distances created")
 
+    # def create_KG(shortest_distances, sorted_list):
     G = nx.Graph()
 
     for i in range(len(sorted_list)):
