@@ -1,7 +1,5 @@
-import pandas as pd
 import numpy as np
 import networkx as nx
-import math
 from collections import defaultdict
 
 def get_all_tuples(text_file = "example_day_8.txt"):
@@ -23,77 +21,6 @@ def get_all_tuples(text_file = "example_day_8.txt"):
     print("STEP 1 DONE - all tuples created")
     return all_tuples
 
-def compare_distance_two_pairs(pair_1, pair_2):
-    # pair_1 = all_tuples[0]
-    # pair_2 = all_tuples[1]
-
-    xa, ya, za = pair_1
-    xb, yb, zb = pair_2
-
-    return np.sqrt((xa-xb)**2+(ya-yb)**2+(za-zb)**2)
-
-def get_dict_comparing_all_coordinates(all_tuples):
-
-    smallest_distances = {}
-    iteration = 1
-
-    for j in range(len(all_tuples)):
-        pair1 = all_tuples[j]
-
-        for i in range(len(all_tuples)):
-            if i != j:
-                # print(f"comparing pair1:{all_tuples[j]} and pair2:{all_tuples[i]}")
-                pair2=all_tuples[i]
-                comparison = (compare_distance_two_pairs(pair1, pair2))
-                if comparison not in smallest_distances:
-                    smallest_distances[comparison]=sorted([(pair1, pair2)])
-
-                # print(f"iteration n°{iteration}")
-                iteration+=1
-
-    print("STEP 2 DONE - creating a dictionary of all distances according to the comparison of coordinates with each other")
-
-    return smallest_distances
-
-def get_ten_smallest_distances_for_KG(smallest_distances):
-
-    smallest_distances_for_graph = []
-
-    for key, value in smallest_distances.items():
-        for i in range(10):
-            if key == sorted((smallest_distances.keys()))[i]:
-                temp = [value[0][0], value[0][1], key]
-                smallest_distances_for_graph.append(temp)
-                next
-
-    print("STEP 3 DONE - we have selected the 10 smallest distances")
-
-    return smallest_distances_for_graph
-
-def create_KG(smallest_distances_for_graph):
-    G = nx.Graph()
-    for i in range(len(smallest_distances_for_graph)):
-        node_1 = smallest_distances_for_graph[i][0]
-        node_2 = smallest_distances_for_graph[i][1]
-        result = smallest_distances_for_graph[i][2]
-
-        G.add_edge(node_1, node_2, label=result)
-
-        if (i+1) == 10:
-            # Visualize the knowledge graph
-            pos = nx.spring_layout(G, seed=42, k=0.9)
-            labels = nx.get_edge_attributes(G, 'label')
-            # plt.figure(figsize=(12, 10))
-            # nx.draw(G, pos, with_labels=True, font_size=10, node_size=700, node_color='lightblue', edge_color='gray', alpha=0.6)
-            # nx.draw_networkx_edge_labels(G, pos, edge_labels=labels, font_size=8, label_pos=0.3, verticalalignment='baseline')
-            # plt.title('Knowledge Graph')
-            # plt.show()
-            break
-
-    print("STEP 4 DONE - Knowledge Graph has been created")
-
-    return G
-
 def get_result(G):
     """
     currently used
@@ -110,15 +37,6 @@ def get_result(G):
     print("STEP 5 DONE - result computed")
 
     return first * second * third
-
-def answer_part_(text_file= "example_day_8.txt"):
-    all_tuples = get_all_tuples(text_file )
-    smallest_distances = get_dict_comparing_all_coordinates(all_tuples)
-    smallest_distances_for_graph = get_ten_smallest_distances_for_KG(smallest_distances)
-    G = create_KG(smallest_distances_for_graph)
-    return get_result(G)
-
-# ----------------- Part 1 -----------------
 
 
 def answer_part_1(text_file="example_day_8.txt"):
