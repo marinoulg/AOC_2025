@@ -164,4 +164,3 @@ def answer_part_1(text_file="example_day_8.txt"):
     return res
 
 print(answer_part_1("day_8.txt"))
-# # print(create_KG("day_8.txt"))
