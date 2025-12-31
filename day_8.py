@@ -144,7 +144,8 @@ def answer_part_1(text_file="example_day_8.txt"):
                 # dist = (math.dist(comparison_tuple, all_tuples[i]))
                 dx = comparison_tuple[0] - all_tuples[i][0]
                 dy = comparison_tuple[1] - all_tuples[i][1]
-                dist = dx*dx + dy*dy
+                dz = comparison_tuple[2] - all_tuples[i][2]
+                dist = np.sqrt(dx*dx + dy*dy + dz*dz)
 
                 all_distances_tuples[dist].append((comparison_tuple, all_tuples[i]))
                 all_distances.add(dist)
