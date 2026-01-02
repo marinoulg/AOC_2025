@@ -1,5 +1,3 @@
-import pandas as pd
-
 def get_ranges(text_file="example_day_5.txt"):
     """
     get the ranges in the text_file
@@ -41,7 +39,7 @@ def part_1(text_file="example_day_5.txt"):
     print("total count of FRESH is: ", (len(list_2))-count)
     return len(list_2)-count
 
-print(part_1("day_5.txt"))
+# print(part_1("day_5.txt"))
 
 # ---------------- Part 2 ----------------
 
@@ -71,20 +69,20 @@ def reset_ranges(df):
 
     return df, idx_to_be_dropped
 
-df, idx_to_be_dropped = reset_ranges(df)
+# df, idx_to_be_dropped = reset_ranges(df)
 # print(df.shape)
 # print(idx_to_be_dropped)
 # print(df)
 
-for idx in idx_to_be_dropped:
-    print(idx)
-    df.drop(index=idx, inplace=True)
+# for idx in idx_to_be_dropped:
+#     print(idx)
+#     df.drop(index=idx, inplace=True)
 
-print()
-print("total number of indexes dropped: ", len(idx_to_be_dropped))
 # print()
-# print(df)
-df.reset_index(drop="index", inplace=True)
+# print("total number of indexes dropped: ", len(idx_to_be_dropped))
+# # print()
+# # print(df)
+# df.reset_index(drop="index", inplace=True)
 
 # df.reset_index(drop="index", inplace=True)
 # if (df.loc[(df.shape[0])-2, 0] <  df.loc[(df.shape[0])-1, 0] <  df.loc[(df.shape[0])-2, 1]):
@@ -130,16 +128,16 @@ def get_all_ranges_overlapping(df):
     print(df.shape)
     return df
 
-print(df)
-for _ in range(df.shape[0]):
-    print("iteration n°", _)
-    df = get_all_ranges_overlapping(df)
-    df.sort_values(by=0, inplace=True)
-print(df)
+# print(df)
+# for _ in range(df.shape[0]):
+#     print("iteration n°", _)
+#     df = get_all_ranges_overlapping(df)
+#     df.sort_values(by=0, inplace=True)
+# print(df)
 
-df.drop_duplicates(inplace=True)
-df.reset_index(drop="index", inplace=True)
-print(df.shape)
+# df.drop_duplicates(inplace=True)
+# df.reset_index(drop="index", inplace=True)
+# print(df.shape)
 
 """
 df.sort_values(by=1, inplace = True)
@@ -150,9 +148,9 @@ for _ in range(df.shape[0]):
 print(df)
 """
 
-df.to_csv("day_5.csv")
-df["+1"] = df[1]+1
-print(sum(df["+1"]-df[0]))
+# df.to_csv("day_5.csv")
+# df["+1"] = df[1]+1
+# print(sum(df["+1"]-df[0]))
 
 # total_fresh_ranges = []
 # for i in range(df.shape[0]):
