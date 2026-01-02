@@ -21,11 +21,14 @@ def get_all_tuples(text_file = "example_day_8.txt"):
     print("STEP 1 DONE - all tuples created")
     return all_tuples
 
+# print(get_all_tuples())
+
 def get_result(G):
     """
     currently used
     """
     components = list(nx.connected_components(G))
+    # print(components)
     all_lengths = ([len(c) for c in components])
 
     first = max(all_lengths)
@@ -39,7 +42,7 @@ def get_result(G):
     return first * second * third
 
 
-def answer_part_1(text_file="example_day_8.txt"):
+def answer_part_1(text_file="example_day_8.txt", k=10):
     """
     half working - only on example --> needs to include all antinodes now
         "geometry → integer vector stepping → set of points"
@@ -69,8 +72,9 @@ def answer_part_1(text_file="example_day_8.txt"):
                 all_distances.add(dist)
 
     print("STEP 2 DONE - all distances tuples and set created")
+    # print(all_distances_tuples)
 
-    sorted_list = sorted(all_distances)[:10]
+    sorted_list = sorted(all_distances)[:k]
     print("STEP 3 DONE - a list of 10 shortest distances created")
 
     # def create_KG(shortest_distances, sorted_list):
@@ -79,6 +83,7 @@ def answer_part_1(text_file="example_day_8.txt"):
     for i in range(len(sorted_list)):
         # temp_list = all_distances_tuples[sorted_list[i]]
         for node1, node2 in all_distances_tuples[sorted_list[i]]:
+            # print(all_distances_tuples[sorted_list[i]])
 
         # if (temp_list[0] == temp_list[-1]) and (temp_list[1] == temp_list[2]):
         #     node1, node2 = temp_list
@@ -91,4 +96,4 @@ def answer_part_1(text_file="example_day_8.txt"):
     res = get_result(G)
     return res
 
-print(answer_part_1("day_8.txt"))
+print(answer_part_1("day_8.txt", k=1000))
