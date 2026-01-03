@@ -1,6 +1,7 @@
 import numpy as np
 import networkx as nx
 from collections import defaultdict
+import matplotlib.pyplot as plt
 
 def get_all_tuples(text_file = "example_day_8.txt"):
     """
@@ -28,7 +29,7 @@ def get_result(G):
     currently used
     """
     components = list(nx.connected_components(G))
-    # print(components)
+    print(components)
     all_lengths = ([len(c) for c in components])
 
     first = max(all_lengths)
@@ -90,10 +91,16 @@ def answer_part_1(text_file="example_day_8.txt", k=10):
             G.add_edge(node1, node2, label=sorted_list[i])
         # elif len(temp_list) > 2:
         #     print(temp_list)
+            nx.draw(G, with_labels=True)
+            plt.show()
 
     print("STEP 4 DONE - Knowledge Graph defined")
 
     res = get_result(G)
     return res
 
-print(answer_part_1("day_8.txt", k=1000))
+# print(answer_part_1("example_day_8.txt", k=1000))
+
+
+# components = list(nx.connected_components(G))
+# print(components)
