@@ -131,6 +131,110 @@ def get_new_range(tuple1, tuple2):
     return new_range, to_pop
 
 
+def new_sets(ranges):
+
+    """
+    il pop pas option 7,
+    et option 10 à rajouter pour le to_remove
+
+    j'aime pas bcp ma manière de traiter le to_remove, à tweaker mieux je pense
+    """
+
+    new_list = set()
+    ranges = sorted(ranges)
+    to_remove = list()
+
+    for j in range(len(ranges)):
+        comparing = ranges[j]
+        for i in range(len(ranges)):
+            # print("comparing",(comparing, ranges[i]))
+            if i != j:
+                try:
+                    n, to_pop = get_new_range(ranges[i], comparing)
+                    if isinstance(n[0], int):
+                        # print("+1")
+                        # print("n",n)
+                        for idx in range(len(to_pop)):
+                            to_remove.append(to_pop[idx])
+                            if to_pop[idx] in new_list:
+                                new_list.remove(to_pop[idx])
+                        new_list.add(n)
+                        n_bis, to_pop = get_new_range(ranges[i], comparing)
+                        if isinstance(n_bis[0], int):
+                            for idx in range(len(to_pop)):
+                                to_remove.append(to_pop[idx])
+                                if to_pop[idx] in new_list:
+                                    new_list.remove(to_pop[idx])
+                            # print("comparing nbis",(n_bis, ranges[i]))
+                            # print("+1")
+                            # print("n",n)
+
+                            new_list.add(n_bis)
+                    else:
+                        i += 1
+                        # print(comparing)
+                        # print("ok", tuple(ranges[i]))
+                        # new_list.add(tuple(ranges[i]))
+                        # print(comparing)
+                        new_list.add(tuple(comparing))
+
+                except UnboundLocalError:
+                    i += 1
+            else:
+                # print("not together:", (tuple(comparing), tuple(ranges[i])))
+                pass
+
+    # for idx in range(len(to_remove)):
+    #     print(to_pop[idx])
+    #     if to_pop[idx] in new_list:
+    #         new_list.remove(to_pop[idx])
+    new_list = sorted(list(new_list))
+
+    to_remove = (list(set(to_remove)))
+    for i in range(len(to_remove)):
+        a,b = to_remove[i]
+        if (a,b) in new_list:
+            new_list.remove((a,b))
+
+
+    return new_list, to_remove
+
+
+def get_answer(text_file="example_day_5.txt"):
+    ranges = get_ranges(text_file)[0]
+    new_list = ranges.copy()
+    iteration = 4
+
+    my_dict = {0:0, 1:1, 2:2, 3:3, 4:4}
+    for _ in range(100000):
+        new_list = new_sets(new_list)[0]
+        print(new_list)
+        my_dict[iteration] = (new_list)
+
+        if my_dict[iteration] == my_dict[iteration-1] == my_dict[iteration-2] == my_dict[iteration-3] == my_dict[iteration-4]:
+            print("iteration:", iteration-1)
+            break
+        iteration += 1
+    else:
+        print(iteration)
+
+    return my_dict, iteration
+
+
+
+def return_part1(file_text="day_5.txt"):
+    dict_, iteration = get_answer(file_text)
+    answer = list(dict_[iteration])
+
+    total = list()
+    for i in range(len(answer)):
+        a,b = answer[i]
+        # print((b+1)-a)
+        total.append((b+1)-a)
+
+    return sum(total)
+
+
 
 
 
