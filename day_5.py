@@ -43,121 +43,92 @@ def part_1(text_file="example_day_5.txt"):
 
 # ---------------- Part 2 ----------------
 
-# (part_1())
 
-# df = pd.DataFrame(ranges_)
-# df = df.sort_values(by=0)
-# df.drop_duplicates(inplace=True)
-# print(df)
-print()
+def get_new_range(tuple1, tuple2):
+    """
+    this function returns the correct range, if given two tuples
 
-# print(df.shape)
-# print()
+    need to implement options 9 and 10 for it to be complete (bc they happen in real input)
+    """
+    a,b = tuple1
+    c,d = tuple2
 
-def reset_ranges(df):
-    idx_to_be_dropped = []
-    df.reset_index(drop="index", inplace=True)
-    for i in range((df.shape[0])-2):
-        if (df.loc[i, 0] <  df.loc[i+1, 0] <  df.loc[i, 1]):
-            print("index to be dropped is ", (i+1))
-            print(f"{df.loc[i, 1]} is to be replaced by {df.loc[i+1, 1]}")
-            df.loc[i, 1] = df.loc[i+1, 1]
-            idx_to_be_dropped.append((i+1))
-            # df = df.drop(index=i+1)
-            # df.reset_index(drop="index", inplace=True)
-            # print(df)
+    if a == c:
+        # Option 4 or Option 6 or Option 8
+        if d > b:
+            # Option 6
+            # a ------- b
+            # c ------------- d
+            new_range = (a,d)
+            to_pop = [(a,b),(c,d)]
 
-    return df, idx_to_be_dropped
+        elif d == b:
+            # Option 4
+            # a ------- b
+            # c ------- d
+            new_range = (a,b)
+            to_pop = [(None, None)]
+        elif d < b:
+            # Option 8
+            # a ------- b
+            # c --- d
+            new_range = (a,b)
+            to_pop = [(c,d)]
+        elif a == d:
+            # Option 9
+            # a ------- b
+            # c
+            # d
+            new_range = (a,b)
+            to_pop = [(c,d)]
 
-# df, idx_to_be_dropped = reset_ranges(df)
-# print(df.shape)
-# print(idx_to_be_dropped)
-# print(df)
+    elif a < c:
+        # Option 1 or Option 2 or Option 3 or Option 7
+        if c < b and b < d:
+            # Option 1
+            # a ------- b
+            #       c ------- d
+            # print("option 1")
+            new_range = (a,d)
+            to_pop = [(a,b),(c,d)]
+        elif c < b and d < b:
+            # Option 2
+            # a ------- b
+            #   c -- d
+            new_range = (a,b)
+            to_pop = [(c,d)]
+        elif c == b and b < d:
+            # Option 3
+            # a ------- b
+                    #   c ---- d
+            new_range = (a,d)
+            to_pop = [(a,b),(c,d)]
+        elif c < b and b == d:
+            # Option 7
+            # a ------- b
+            #     c --- d
+            new_range = (a,b)
+            to_pop = [(c,d)]
+        elif c == b and c == d:
+            # Option 10
+            # a ------- b
+                    #   c
+                    #   d
+            new_range = (a,b)
+            to_pop = [(c,d)]
 
-# for idx in idx_to_be_dropped:
-#     print(idx)
-#     df.drop(index=idx, inplace=True)
+        elif b < c:
+            # Option 5 will be delt with on its own
+            # a ------- b
+            #               c ------- d
+            new_range = ((a,b),(c,d))
+            to_pop = [(None, None)]
 
-# print()
-# print("total number of indexes dropped: ", len(idx_to_be_dropped))
-# # print()
-# # print(df)
-# df.reset_index(drop="index", inplace=True)
+    else:
+        # it means that a > c, which is algorithmically the same as a < c, if a is c and c is a
+        return get_new_range(tuple2, tuple1)
 
-# df.reset_index(drop="index", inplace=True)
-# if (df.loc[(df.shape[0])-2, 0] <  df.loc[(df.shape[0])-1, 0] <  df.loc[(df.shape[0])-2, 1]):
-#         # print("index to be dropped is ", -1)
-#         # print(f"{df.loc[(df.shape[0])-2, 1]} is to be replaced by {df.loc[(df.shape[0])-1, 1]}")
-#         df.loc[(df.shape[0])-2, 1] = df.loc[(df.shape[0])-1, 1]
-
-#         df = df.drop(index=(df.shape[0])-1)
-#         # idx_to_be_dropped.append((df.shape[0])-1)
-#         df.reset_index(drop="index", inplace=True)
-
-
-def get_all_ranges_overlapping(df):
-    for _ in range(df.shape[0]):
-        # df = reset_ranges(df)
-
-        df, idx_to_be_dropped = reset_ranges(df)
-        # print(df.shape)
-        # print(idx_to_be_dropped)
-        # print(df)
-
-        for idx in idx_to_be_dropped:
-            print(idx)
-            df.drop(index=idx, inplace=True)
-
-
-
-        # print()
-        # print("total number of indexes dropped: ", len(idx_to_be_dropped))
-
-        # print(df)
-        df.reset_index(drop="index", inplace=True)
-
-        df.reset_index(drop="index", inplace=True)
-        if (df.loc[(df.shape[0])-2, 0] <  df.loc[(df.shape[0])-1, 0] <  df.loc[(df.shape[0])-2, 1]):
-                # print("index to be dropped is ", -1)
-                # print(f"{df.loc[(df.shape[0])-2, 1]} is to be replaced by {df.loc[(df.shape[0])-1, 1]}")
-                df.loc[(df.shape[0])-2, 1] = df.loc[(df.shape[0])-1, 1]
-
-                df = df.drop(index=(df.shape[0])-1)
-                # idx_to_be_dropped.append((df.shape[0])-1)
-                df.reset_index(drop="index", inplace=True)
-    print(df.shape)
-    return df
-
-# print(df)
-# for _ in range(df.shape[0]):
-#     print("iteration n°", _)
-#     df = get_all_ranges_overlapping(df)
-#     df.sort_values(by=0, inplace=True)
-# print(df)
-
-# df.drop_duplicates(inplace=True)
-# df.reset_index(drop="index", inplace=True)
-# print(df.shape)
-
-"""
-df.sort_values(by=1, inplace = True)
-for _ in range(df.shape[0]):
-    print("iteration n°", _)
-    df = get_all_ranges_overlapping(df)
-    df.sort_values(by=0, inplace=True)
-print(df)
-"""
-
-# df.to_csv("day_5.csv")
-# df["+1"] = df[1]+1
-# print(sum(df["+1"]-df[0]))
-
-# total_fresh_ranges = []
-# for i in range(df.shape[0]):
-#     total_fresh_ranges.append(df.loc[i, 1]+1 - df.loc[i, 0])
-
-# print((total_fresh_ranges))
-# print(sum(total_fresh_ranges))
+    return new_range, to_pop
 
 
 
