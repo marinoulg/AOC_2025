@@ -22,8 +22,6 @@ def get_all_tuples(text_file = "example_day_8.txt"):
     print("STEP 1 DONE - all tuples created")
     return all_tuples
 
-# print(get_all_tuples())
-
 def get_result(G):
     """
     currently used
@@ -42,65 +40,79 @@ def get_result(G):
 
     return first * second * third
 
+def get_distances_sorted(all_tuples, k=None):
+    all_distances_set = set()
+    all_distances_tuples_dict = defaultdict(list)
 
-def answer_part_1(text_file="example_day_8.txt", k=10):
-    """
-    half working - only on example --> needs to include all antinodes now
-        "geometry → integer vector stepping → set of points"
-
-    mid-work of all current steps (granted, could be better organised)
-    followed to get to the solution
-    """
-
-    all_tuples = get_all_tuples(text_file)
-
-    all_distances = set()
-    all_distances_tuples = defaultdict(list)
-
-    # def get_ten_shortest_distances(text_file = "example_day_8.txt"):
     for j in range(len(all_tuples)):
         comparison_tuple = all_tuples[j]
 
         for i in range(len(all_tuples)):
             if all_tuples[i] != comparison_tuple:
-                # dist = (math.dist(comparison_tuple, all_tuples[i]))
                 dx = comparison_tuple[0] - all_tuples[i][0]
                 dy = comparison_tuple[1] - all_tuples[i][1]
                 dz = comparison_tuple[2] - all_tuples[i][2]
                 dist = np.sqrt(dx*dx + dy*dy + dz*dz)
 
-                all_distances_tuples[dist].append((comparison_tuple, all_tuples[i]))
-                all_distances.add(dist)
+
+                temp = (comparison_tuple, all_tuples[i])
+                all_distances_tuples_dict[dist].append(temp)
+                all_distances_set.add(dist)
 
     print("STEP 2 DONE - all distances tuples and set created")
-    # print(all_distances_tuples)
 
-    sorted_list = sorted(all_distances)[:k]
-    print("STEP 3 DONE - a list of 10 shortest distances created")
+    sorted_list = sorted(all_distances_set)[:k]
+    print(f"STEP 3 DONE - a list of {k if k != None else "all the ranked"} shortest distances created")
+    return sorted_list, all_distances_tuples_dict
 
-    # def create_KG(shortest_distances, sorted_list):
+
+
+def answer_part_1(text_file="example_day_8.txt", k=10):
+    """
+    in this function, it constructs the graph and gets the result from another function
+    """
+    all_tuples = get_all_tuples(text_file)
+    sorted_list, all_distances_tuples_dict = get_distances_sorted(all_tuples, k)
+
     G = nx.Graph()
 
     for i in range(len(sorted_list)):
-        # temp_list = all_distances_tuples[sorted_list[i]]
-        for node1, node2 in all_distances_tuples[sorted_list[i]]:
-            # print(all_distances_tuples[sorted_list[i]])
-
-        # if (temp_list[0] == temp_list[-1]) and (temp_list[1] == temp_list[2]):
-        #     node1, node2 = temp_list
+        for node1, node2 in all_distances_tuples_dict[sorted_list[i]]:
             G.add_edge(node1, node2, label=sorted_list[i])
-        # elif len(temp_list) > 2:
-        #     print(temp_list)
-            nx.draw(G, with_labels=True)
-            plt.show()
+            # nx.draw(G, with_labels=True)
+            # plt.show()
 
     print("STEP 4 DONE - Knowledge Graph defined")
 
     res = get_result(G)
     return res
 
-# print(answer_part_1("example_day_8.txt", k=1000))
+print(answer_part_1("day_8.txt", k=1000))
 
+# ------------------- Part 2 ---------------------
 
-# components = list(nx.connected_components(G))
-# print(components)
+def get_both_tuples_that_reunite_components(text_file="example_day_8.txt"):
+    all_tuples = get_all_tuples(text_file)
+    sorted_list, all_distances_tuples_dict = get_distances_sorted(all_tuples)
+
+    G = nx.Graph()
+
+    k = len(all_tuples)
+    iteration = 0
+    for i in range(len(sorted_list)):
+        node1, node2 = all_distances_tuples_dict[sorted_list[i]][0]
+        G.add_edge(node1, node2)
+        if len(list(nx.connected_components(G))[0]) == k:
+            print(iteration)
+            return (node1, node2)
+        iteration+=1
+    # nx.draw(G, with_labels=True)
+    # plt.show()
+
+    print(nx.number_connected_components(G))
+
+def get_answer_part2(text_file="example_day_8.txt"):
+    n1, n2 = get_both_tuples_that_reunite_components(text_file)
+    return n1[0]*n2[0]
+
+print(get_answer_part2("day_8.txt"))
