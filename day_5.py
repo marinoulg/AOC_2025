@@ -53,6 +53,8 @@ def get_new_range(tuple1, tuple2):
     a,b = tuple1
     c,d = tuple2
 
+    to_return = list()
+
     if a == c:
         # Option 4 or Option 6 or Option 8
         if d > b:
@@ -60,27 +62,24 @@ def get_new_range(tuple1, tuple2):
             # a ------- b
             # c ------------- d
             new_range = (a,d)
-            to_pop = [(a,b),(c,d)]
+            # to_pop = [(a,b),(c,d)]
 
         elif d == b:
             # Option 4
             # a ------- b
             # c ------- d
             new_range = (a,b)
-            to_pop = [(None, None)]
         elif d < b:
             # Option 8
             # a ------- b
             # c --- d
             new_range = (a,b)
-            to_pop = [(c,d)]
         elif a == d:
             # Option 9
             # a ------- b
             # c
             # d
             new_range = (a,b)
-            to_pop = [(c,d)]
 
     elif a < c:
         # Option 1 or Option 2 or Option 3 or Option 7
@@ -90,168 +89,81 @@ def get_new_range(tuple1, tuple2):
             #       c ------- d
             # print("option 1")
             new_range = (a,d)
-            to_pop = [(a,b),(c,d)]
+            # to_pop = [(a,b),(c,d)]
         elif c < b and d < b:
             # Option 2
             # a ------- b
             #   c -- d
             new_range = (a,b)
-            to_pop = [(c,d)]
         elif c == b and b < d:
             # Option 3
             # a ------- b
                     #   c ---- d
             new_range = (a,d)
-            to_pop = [(a,b),(c,d)]
         elif c < b and b == d:
             # Option 7
             # a ------- b
             #     c --- d
             new_range = (a,b)
-            to_pop = [(c,d)]
         elif c == b and c == d:
             # Option 10
             # a ------- b
                     #   c
                     #   d
             new_range = (a,b)
-            to_pop = [(c,d)]
-
-        elif b < c:
+        elif b+1 < c:
             # Option 5 will be delt with on its own
             # a ------- b
             #               c ------- d
-            new_range = ((a,b),(c,d))
-            to_pop = [(None, None)]
+            new_range = ((c,d))
+            to_return.append((a,b))
+        elif c == (b+1):
+            new_range = (a,d)
 
     else:
         # it means that a > c, which is algorithmically the same as a < c, if a is c and c is a
         return get_new_range(tuple2, tuple1)
 
-    return new_range, to_pop
+    return new_range
 
 
-def new_sets(ranges):
+def get_all_ranges(text_file="example_day_5.txt"):
 
-    """
-    il pop pas option 7,
-    et option 10 à rajouter pour le to_remove
+    ranges, list_2 = get_ranges(text_file)
 
-    j'aime pas bcp ma manière de traiter le to_remove, à tweaker mieux je pense
-    """
-
-    new_list = set()
     ranges = sorted(ranges)
-    to_remove = list()
+    new_range = tuple(ranges[0])
 
-    for j in range(len(ranges)):
-        comparing = ranges[j]
-        for i in range(len(ranges)):
-            # print("comparing",(comparing, ranges[i]))
-            if i != j:
-                try:
-                    n, to_pop = get_new_range(ranges[i], comparing)
-                    if isinstance(n[0], int):
-                        # print("+1")
-                        # print("n",n)
-                        for idx in range(len(to_pop)):
-                            to_remove.append(to_pop[idx])
-                            if to_pop[idx] in new_list:
-                                new_list.remove(to_pop[idx])
-                        new_list.add(n)
-                        n_bis, to_pop = get_new_range(ranges[i], comparing)
-                        if isinstance(n_bis[0], int):
-                            for idx in range(len(to_pop)):
-                                to_remove.append(to_pop[idx])
-                                if to_pop[idx] in new_list:
-                                    new_list.remove(to_pop[idx])
-                            # print("comparing nbis",(n_bis, ranges[i]))
-                            # print("+1")
-                            # print("n",n)
+    to_be_returned = list()
 
-                            new_list.add(n_bis)
-                    else:
-                        i += 1
-                        # print(comparing)
-                        # print("ok", tuple(ranges[i]))
-                        # new_list.add(tuple(ranges[i]))
-                        # print(comparing)
-                        new_list.add(tuple(comparing))
+    if len(ranges) > 1:
+        for idx in range(1, len(ranges)):
+            old_range = new_range
+            new_range = get_new_range(new_range, ranges[idx])
+            if old_range[1] < new_range[0]:
+                to_be_returned.append(old_range)
 
-                except UnboundLocalError:
-                    i += 1
-            else:
-                # print("not together:", (tuple(comparing), tuple(ranges[i])))
-                pass
+        new_range = get_new_range(new_range, ranges[idx])
+        if old_range[1] < new_range[0]:
+            to_be_returned.append(new_range)
 
-    # for idx in range(len(to_remove)):
-    #     print(to_pop[idx])
-    #     if to_pop[idx] in new_list:
-    #         new_list.remove(to_pop[idx])
-    new_list = sorted(list(new_list))
-
-    to_remove = (list(set(to_remove)))
-    for i in range(len(to_remove)):
-        a,b = to_remove[i]
-        if (a,b) in new_list:
-            new_list.remove((a,b))
-
-
-    return new_list, to_remove
-
-
-def get_answer(text_file="example_day_5.txt"):
-    ranges = get_ranges(text_file)[0]
-    new_list = ranges.copy()
-    iteration = 4
-
-    my_dict = {0:0, 1:1, 2:2, 3:3, 4:4}
-    for _ in range(100000):
-        new_list = new_sets(new_list)[0]
-        print(new_list)
-        my_dict[iteration] = (new_list)
-
-        if my_dict[iteration] == my_dict[iteration-1] == my_dict[iteration-2] == my_dict[iteration-3] == my_dict[iteration-4]:
-            print("iteration:", iteration-1)
-            break
-        iteration += 1
+        new_range = (get_new_range(old_range, new_range))
+        if new_range not in to_be_returned:
+            to_be_returned.append(new_range)
     else:
-        print(iteration)
+        return tuple(ranges[0])
 
-    return my_dict, iteration
+    return to_be_returned
 
 
-
-def return_part1(file_text="day_5.txt"):
-    dict_, iteration = get_answer(file_text)
-    answer = list(dict_[iteration])
+def answer_part2(text_file="example_day_5.txt"):
+    my_liste = get_all_ranges(text_file)
 
     total = list()
-    for i in range(len(answer)):
-        a,b = answer[i]
-        # print((b+1)-a)
+    for i in range(len(my_liste)):
+        a,b = my_liste[i]
         total.append((b+1)-a)
 
-    return sum(total)
+    return (sum(total))
 
-
-
-
-
-# 372759287730410
-# 370192515053777
-# 370 192 515 053 777
-# 369 993 886 244 502
-
-# is too high
-
-# 344 322 275 609 331 not the right answer
-# 344 322 275 609 198 not the right answer
-# 344 322 275 609 331
-
-# il faut tweeker le code pour sort by col "1" en ordonné aussi
-# 344123646800056
-# 304 381 322 684 534 not the correct answer
-# 304 381 322 684 534
-# 353 376 608 341 030
-# 387 392 299 327 819
+print(answer_part2("day_5.txt"))
