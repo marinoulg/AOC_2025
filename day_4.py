@@ -1,17 +1,22 @@
 import pandas as pd
+from time import time
 
-my_input = open("day_4.txt", "r").read()
-new = my_input.split("\n")
+# --------------- Part 1 ---------------
 
-df = []
-for x in range(len(new)-1):
-    temp = []
-    for i in new[x]:
-        temp.append(i)
-    df.append(temp)
+def setup(text_file = "day_4.txt"):
+    my_input = open(text_file, "r").read()
+    new = my_input.split("\n")
 
-df = (pd.DataFrame(df))
-print(df)
+    df = []
+    for x in range(len(new)-1):
+        temp = []
+        for i in new[x]:
+            temp.append(i)
+        df.append(temp)
+
+    df = (pd.DataFrame(df))
+    return df
+
 
 def get_coordinates(df):
     coordinates = []
@@ -21,24 +26,7 @@ def get_coordinates(df):
                 coordinates.append((idx, col))
     return coordinates
 
-print()
-# print(coordinates)
 
-answers_coords_example = [(0, 2),
-                          (0, 3),
-                          (0, 5),
-                          (0, 6),
-                          (0, 8),
-                          (1, 0),
-                          (2, 6),
-                          (4, 0),
-                          (4, 9),
-                          (7, 0),
-                          (9, 0),
-                          (9, 2),
-                          (9, 8)]
-
-# Part 1
 def remove_forklifts(df):
     coordinates = get_coordinates(df)
 
@@ -67,10 +55,7 @@ def remove_forklifts(df):
             count+= 1
 
         coords[(idx, col)] = count
-        # print("count:",count)
-        # print('-'*10)
 
-    # print(coords)
 
     to_be_removed = []
     count = 0
@@ -78,80 +63,43 @@ def remove_forklifts(df):
         if coords[key] < 4:
             count += 1
             to_be_removed.append(key)
-        # print()
 
-    # print()
-    # print(count)
     return coords, count, to_be_removed
 
-# coords, count, to_be_removed = remove_forklifts(df)
-# print(count)
+def answer_part1(text_file = "day_4.txt"):
+    df = setup(text_file)
 
-# print(coords)
-# Part 2
-
-total = 0
-to_stop = 0
-for _ in range(10000):
     coords, count, to_be_removed = remove_forklifts(df)
-    for key in list(to_be_removed):
-        idx, col = key
-        df.loc[idx, col] = '.'
-    total += (count)
+    return count
 
-    if count == 0:
-        to_stop += 1
-
-    if to_stop == 5:
-        break
-
-    print(total)
-# print(df)
-
-print(total)
+print("Part 1:", answer_part1())
 
 
 
-"""
-coords = {}
-for coordinate in coordinates:
-    idx, col = coordinate
-    print(f"({idx}, {col})")
-    count = 0
+# --------------- Part 2 ---------------
 
-    if idx != 0:
-        if (idx-1, col) == "@":
-            print("option 1: adding 1")
-            count += 1
-        if (idx-1, col-1) == "@":
-            print("option 2: adding 1")
-            count += 1
-        if (idx-1, col+1) == "@":
-            print("option 3: adding 1")
-            count += 1
+def answer_part2(text_file = "day_4.txt"):
+    now = time()
+    df = setup(text_file)
 
-    if col != 0:
-        if (idx, col-1) == "@":
-            print("option 4: adding 1")
-            count += 1
+    total = 0
+    to_stop = 0
 
-    if idx != df.shape[0]:
-        if (idx+1, col) == "@":
-            print("option 5: adding 1")
-            count += 1
-        if (idx+1, col-1) == "@":
-            print("option 6: adding 1")
-            count += 1
-        if (idx+1, col+1) == "@":
-            print("option 7: adding 1")
-            count += 1
+    for _ in range(10000):
+        coords, count, to_be_removed = remove_forklifts(df)
+        for key in list(to_be_removed):
+            idx, col = key
+            df.loc[idx, col] = '.'
+        total += (count)
 
-    if col != df.shape[1]:
-        if (idx, col+1) == "@":
-            print("option 8: adding 1")
-            count += 1
+        if count == 0:
+            to_stop += 1
 
-    coords[(idx, col)] = count
-    print("count:",count)
-    print('-'*10)
-"""
+        if to_stop == 5:
+            end = time()
+            break
+
+    return total, (end-now)
+
+total, secs = answer_part2()
+print(f"Part 2: {total} in {secs} seconds")
