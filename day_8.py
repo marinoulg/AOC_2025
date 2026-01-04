@@ -3,7 +3,7 @@ import networkx as nx
 from collections import defaultdict
 import matplotlib.pyplot as plt
 
-def get_all_tuples(text_file = "example_day_8.txt"):
+def get_all_tuples(text_file = "day_8.txt"):
     """
     this function creates a list of tuples from the given input.
     currently used
@@ -22,24 +22,6 @@ def get_all_tuples(text_file = "example_day_8.txt"):
     print("STEP 1 DONE - all tuples created")
     return all_tuples
 
-def get_result(G):
-    """
-    currently used
-    """
-    components = list(nx.connected_components(G))
-    print(components)
-    all_lengths = ([len(c) for c in components])
-
-    first = max(all_lengths)
-    all_lengths.remove(max(all_lengths))
-    second = max(all_lengths)
-    all_lengths.remove(max(all_lengths))
-    third = max(all_lengths)
-
-    print("STEP 5 DONE - result computed")
-
-    return first * second * third
-
 def get_distances_sorted(all_tuples, k=None):
     all_distances_set = set()
     all_distances_tuples_dict = defaultdict(list)
@@ -54,7 +36,6 @@ def get_distances_sorted(all_tuples, k=None):
                 dz = comparison_tuple[2] - all_tuples[i][2]
                 dist = np.sqrt(dx*dx + dy*dy + dz*dz)
 
-
                 temp = (comparison_tuple, all_tuples[i])
                 all_distances_tuples_dict[dist].append(temp)
                 all_distances_set.add(dist)
@@ -66,8 +47,26 @@ def get_distances_sorted(all_tuples, k=None):
     return sorted_list, all_distances_tuples_dict
 
 
+def get_result(G):
+    """
+    currently used
+    """
+    components = list(nx.connected_components(G))
+    # print(components)
+    all_lengths = ([len(c) for c in components])
 
-def answer_part_1(text_file="example_day_8.txt", k=10):
+    first = max(all_lengths)
+    all_lengths.remove(max(all_lengths))
+    second = max(all_lengths)
+    all_lengths.remove(max(all_lengths))
+    third = max(all_lengths)
+
+    print("STEP 5 DONE - result computed")
+
+    return first * second * third
+
+
+def answer_part_1(text_file="day_8.txt", k=1000):
     """
     in this function, it constructs the graph and gets the result from another function
     """
@@ -87,11 +86,11 @@ def answer_part_1(text_file="example_day_8.txt", k=10):
     res = get_result(G)
     return res
 
-print(answer_part_1("day_8.txt", k=1000))
-
+print("Part 1:", answer_part_1())
+print()
 # ------------------- Part 2 ---------------------
 
-def get_both_tuples_that_reunite_components(text_file="example_day_8.txt"):
+def get_both_tuples_that_reunite_components(text_file="day_8.txt"):
     all_tuples = get_all_tuples(text_file)
     sorted_list, all_distances_tuples_dict = get_distances_sorted(all_tuples)
 
@@ -103,16 +102,12 @@ def get_both_tuples_that_reunite_components(text_file="example_day_8.txt"):
         node1, node2 = all_distances_tuples_dict[sorted_list[i]][0]
         G.add_edge(node1, node2)
         if len(list(nx.connected_components(G))[0]) == k:
-            print(iteration)
             return (node1, node2)
+
         iteration+=1
-    # nx.draw(G, with_labels=True)
-    # plt.show()
 
-    print(nx.number_connected_components(G))
-
-def get_answer_part2(text_file="example_day_8.txt"):
+def answer_part_2(text_file="day_8.txt"):
     n1, n2 = get_both_tuples_that_reunite_components(text_file)
     return n1[0]*n2[0]
 
-print(get_answer_part2("day_8.txt"))
+print("Part 2:", answer_part_2())
