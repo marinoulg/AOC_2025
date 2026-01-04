@@ -1,4 +1,4 @@
-
+# ------------ Part 1 ------------
 def find_elem(elem, str_to_be_found):
     """
     permet de chercher un caractère particulier dans une suite de caractères
@@ -44,11 +44,10 @@ def result_1(text_file = "example_day_3.txt"):
     result_p1 = list()
     for i in range(len(updated_input)-1):
         result_p1.append((find_biggest_two(updated_input[i])))
-        print()
 
-    return (sum(result_p1))
+    return sum(result_p1)
 
-
+print("Part 1:", result_1("day_3.txt"))
 
 # ------------ Part 2 ------------
 
@@ -96,10 +95,10 @@ def for_one_elem_in_list(test):
                 biggest_num.append(i)
         length_next = length_next - 1
 
-    return (biggest_num)
+    return biggest_num
 
 
-def result(text_file = "example_day_3.txt"):
+def result_2(text_file = "example_day_3.txt"):
     """
     cette fonction permet de trouver le résultat final attendu dans le challenge, en se basant sur
     toutes celles définies précédemment pour cette partie.
@@ -114,5 +113,4 @@ def result(text_file = "example_day_3.txt"):
 
     return sum(big_nums)
 
-big_n = (result("day_3.txt"))
-print(big_n)
+print("Part 2:", result_2("day_3.txt"))
