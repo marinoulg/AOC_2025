@@ -1,11 +1,13 @@
-def get_ranges(text_file="example_day_5.txt"):
+# ---------------- Part 1 ----------------
+
+def get_ranges(text_file="day_5.txt"):
     """
     get the ranges in the text_file
     """
     my_input = open(text_file, "r").read()
     new = my_input.split("\n")
 
-    list_1=list()
+    list_1 = list()
     list_2 = list()
     for i in range(len((new))):
         if new[i] != '':
@@ -15,14 +17,14 @@ def get_ranges(text_file="example_day_5.txt"):
                 list_2.append(new[idx])
             break
 
-    ranges_ = []
+    ranges = []
     for idx in range(len(list_1)):
         a, b = list_1[idx].split("-")
-        ranges_.append([int(a), int(b)])
+        ranges.append([int(a), int(b)])
 
-    return ranges_, list_2
+    return ranges, list_2
 
-def part_1(text_file="example_day_5.txt"):
+def answer_part1(text_file="day_5.txt"):
     """
     Count the number of ingredients that are spoiled, aka NOT fresh.
     """
@@ -36,10 +38,9 @@ def part_1(text_file="example_day_5.txt"):
         if count_tmp == len(ranges_):
             count += 1
 
-    print("total count of FRESH is: ", (len(list_2))-count)
     return len(list_2)-count
 
-# print(part_1("day_5.txt"))
+print(f"Part 1 : {answer_part1()}")
 
 # ---------------- Part 2 ----------------
 
@@ -62,7 +63,6 @@ def get_new_range(tuple1, tuple2):
             # a ------- b
             # c ------------- d
             new_range = (a,d)
-            # to_pop = [(a,b),(c,d)]
 
         elif d == b:
             # Option 4
@@ -87,9 +87,7 @@ def get_new_range(tuple1, tuple2):
             # Option 1
             # a ------- b
             #       c ------- d
-            # print("option 1")
             new_range = (a,d)
-            # to_pop = [(a,b),(c,d)]
         elif c < b and d < b:
             # Option 2
             # a ------- b
@@ -127,9 +125,8 @@ def get_new_range(tuple1, tuple2):
     return new_range
 
 
-def get_all_ranges(text_file="example_day_5.txt"):
-
-    ranges, list_2 = get_ranges(text_file)
+def get_all_ranges(text_file="day_5.txt"):
+    ranges, _ = get_ranges(text_file)
 
     ranges = sorted(ranges)
     new_range = tuple(ranges[0])
@@ -156,14 +153,14 @@ def get_all_ranges(text_file="example_day_5.txt"):
     return to_be_returned
 
 
-def answer_part2(text_file="example_day_5.txt"):
-    my_liste = get_all_ranges(text_file)
+def answer_part2(text_file="day_5.txt"):
+    my_list = get_all_ranges(text_file)
 
     total = list()
-    for i in range(len(my_liste)):
-        a,b = my_liste[i]
+    for i in range(len(my_list)):
+        a,b = my_list[i]
         total.append((b+1)-a)
 
-    return (sum(total))
+    return sum(total)
 
-print(answer_part2("day_5.txt"))
+print(f"Part 1 : {answer_part2()}")
