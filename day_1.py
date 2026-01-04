@@ -34,10 +34,10 @@ def answer_part2(text_file="day_1.txt"):
 
         elif elem.startswith("R"):
             if where_we_at == 100:
-                where_we_at=0
+                where_we_at = 0
 
             new = (elem.replace("R", ""))
-            if len(new)>2:
+            if len(new) > 2:
                 new = int(new[-2:])
 
                 nb_of_rotations = int(elem[1:-2])
@@ -71,3 +71,5 @@ def answer_part2(text_file="day_1.txt"):
 
 
     print("count zeros:", count_zeros)
+
+answer_part2()
