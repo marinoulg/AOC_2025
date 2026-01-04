@@ -1,11 +1,7 @@
 import pandas as pd
 import math
 
-my_input = open("example_day_6.txt", "r").read()
-new = my_input.split("\n")
-
-# print(new)
-# --------------- My functions --------------
+# --------------- Part 1 --------------
 
 def create_df(new):
     df = []
@@ -16,7 +12,6 @@ def create_df(new):
         df.append(temp)
 
     df = (pd.DataFrame(df))
-    # print(df)
     return df
 
 def get_separation_columns(df, modality="column"):
@@ -117,16 +112,14 @@ def answer_part_1(my_input="day_6.txt"):
         elif sign == "*":
             total.append(math.prod(nums_list))
 
-    print(sum(total))
+    return sum(total)
 
-print("answer_part_1:")
-answer_part_1("example_day_6.txt")
-print("---"*3)
-answer_part_1()
+print("Part 1:", answer_part_1())
 
-print()
+
 # --------------- Part 2 --------------
-def setup(text_file="example_day_6.txt"):
+
+def setup(text_file="day_6.txt"):
     my_input = open(text_file, "r").read()
     new = my_input.split("\n")
     df = create_df(new)
@@ -135,7 +128,7 @@ def setup(text_file="example_day_6.txt"):
     df, separation_lines = clean_df_and_sep_columns(df, separation_lines, modality="index")
     return df
 
-def get_list_of_nb(text_file="example_day_6.txt"):
+def get_list_of_nb(text_file="day_6.txt"):
     df = setup(text_file)
     df_bis = df[list(df.columns)[:-1]]
 
@@ -155,11 +148,10 @@ def get_list_of_nb(text_file="example_day_6.txt"):
         idx_start = idx + 1
     return big_list
 
-def get_result_2(text_file="example_day_6.txt"):
+def answer_part_2(text_file="day_6.txt"):
 
     df = setup(text_file)
     big_list = get_list_of_nb(text_file)
-    # print(big_list)
 
     total = []
     for elem in range(len(big_list)):
@@ -171,9 +163,6 @@ def get_result_2(text_file="example_day_6.txt"):
         elif sign == "*":
             total.append(math.prod(nums_list))
 
-    print(sum(total))
+    return sum(total)
 
-print("answer_part_2:")
-get_result_2()
-print("---"*3)
-get_result_2("day_6.txt")
+print("Part 2:", answer_part_2())
