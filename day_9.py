@@ -1,3 +1,6 @@
+import pandas as pd
+from time import time
+
 def create_df(text_file="example_day_9.txt"):
     my_input = open(text_file, "r").read()
     new = my_input.split("\n")
@@ -7,7 +10,6 @@ def create_df(text_file="example_day_9.txt"):
         x,y = i.split(",")
         coordinates.append((int(y),int(x)))
 
-    print("coordinates",coordinates)
     print("length of coordinates:", len(coordinates))
 
     print("first part done")
@@ -19,7 +21,7 @@ def answer_part_1(text_file="example_day_9.txt"):
     big = int()
     length = int(len(coordinates)/2)+1
     for idx in range(length):
-        print("iteration n°", idx)
+        # print("iteration n°", idx)
         x_a, y_a = coordinates[idx]
 
         for i in range(len(coordinates)):
@@ -31,13 +33,40 @@ def answer_part_1(text_file="example_day_9.txt"):
                 if big <= largeur*longueur:
                     big = largeur*longueur
 
-    print(big)
+    # print(big)
 
 # answer_part_1()
 # print("---"*3)
 # answer_part_1("day_9.txt")
 
 # ---------- Part 2 ----------
+
+def to_visualise(text_file = "example_day_9.txt"):
+
+    coordinates = create_df(text_file)
+    new_coords = get_all_suroundings(coordinates)
+
+    big_x = 0
+    big_y = 0
+    for elem in new_coords:
+        if big_x < elem[0]:
+            big_x = elem[0]
+        if big_y < elem[1]:
+            big_y = elem[1]
+
+    df= pd.DataFrame([["."]*(big_y+1)]*(big_x+1))
+
+    for elem in new_coords:
+        df.loc[elem] = "x"
+
+    nc = get_all_suroundings(new_coords)
+    for elem in nc:
+        df.loc[elem] = "x"
+
+    for elem in coordinates:
+        df.loc[elem] = "#"
+
+    return df
 
 def get_all_suroundings(coordinates):
 
@@ -114,9 +143,11 @@ def answer_part_2(text_file="example_day_9.txt"):
                 checking = check_if_a_pair_is_possible(pair1=pair1, pair2=pair2, nc=nc)
 
                 if checking > biggest_area:
-                        print(checking)
+                        # print(checking)
                         biggest_area = checking
     return biggest_area
 
-
-answer_part_2("day_9.txt")
+now = (time())
+print(answer_part_2("day_9.txt"))
+end = time()
+print(end-now)
