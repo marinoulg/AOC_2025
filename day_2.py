@@ -24,7 +24,7 @@ def answer_part1(text_file="day_2.txt"):
             if is_invalid_1(x):
                 invalid_ID = is_invalid_1(x)
                 invalid_IDs.append(invalid_ID)
-    return (sum(invalid_IDs))
+    return sum(invalid_IDs)
 
 print("Part 1:", answer_part1())
 
@@ -93,6 +93,6 @@ def answer_part2(text_file="day_2.txt"):
                 invalid_ID = is_invalid(x)
                 invalid_IDs.append(invalid_ID)
 
-    return (sum(invalid_IDs))
+    return sum(invalid_IDs)
 
 print("Part 2:", answer_part2())
