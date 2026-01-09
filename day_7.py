@@ -151,7 +151,6 @@ def connections(df, coords):
         for coord in coords:
             idx, col = coord
             temp = []
-            count_temp = 0
 
             if df.loc[idx+2, col-1] == "^":
                 temp.append((idx+2, col-1))
@@ -161,16 +160,9 @@ def connections(df, coords):
                             temp.append((i, col-1))
                             # break
 
-                        elif is_truc(i, col-2, df) == True:
-                            temp.append((i, col-2))
+                        # elif is_truc(i, col-2, df) == True:
+                        #     temp.append((i, col-2))
                         # break
-
-            """
-            (10,5) should be connected to (15,4)
-            """
-            # print(count_temp)
-            # if count_temp == (df.shape[0]) - (idx+1):
-            #         temp.append((i, col-1))
 
 
             if df.loc[idx+2, col+1] == "^":
@@ -181,8 +173,8 @@ def connections(df, coords):
                         temp.append((i, col+1))
                         # break
 
-                    elif is_truc(i, col+2, df) == True:
-                        temp.append((i, col+2))
+                    # elif is_truc(i, col+2, df) == True:
+                    #     temp.append((i, col+2))
                         # break
 
             # print(temp)
