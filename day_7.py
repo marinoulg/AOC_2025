@@ -160,9 +160,9 @@ def get_part_1(input_file="example_day_7.txt"):
 def is_un_trait(idx, col, df):
     return df.loc[(idx, col)] == "|"
 
+
 def is_truc(idx, col, df):
-    if df.loc[idx, col] == "^":
-        return True
+    return df.loc[idx, col] == "^"
 
 
 def connections(df, coords):
