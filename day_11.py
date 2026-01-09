@@ -80,8 +80,7 @@ def get_all_paths_from_svr_to_out(my_dict):
     from_svr_to_out = list(nx.all_simple_paths(G, "svr", "out"))
     return from_svr_to_out
 
-def answer_part_2(text_file= "example_day_11_2.txt", key="svr"):
-
+def get_my_dict(text_file= "example_day_11_2.txt"):
     my_input = open(text_file, "r").read()
     new = my_input.split("\n")[:-1]
 
@@ -89,6 +88,12 @@ def answer_part_2(text_file= "example_day_11_2.txt", key="svr"):
     for i in range(len(new)):
         temp = (new[i].split(": "))
         my_dict[temp[0]] = temp[1].split(" ")
+
+    return my_dict
+
+
+def answer_part_2(text_file= "example_day_11_2.txt", key="svr"):
+    my_dict = get_my_dict(text_file)
 
     from_svr_to_out = get_all_paths_from_svr_to_out(my_dict)
 
