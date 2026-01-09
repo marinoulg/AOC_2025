@@ -27,31 +27,35 @@ def get_coordinates(df, to_find="@"):
                 coordinates.append((idx, col))
     return coordinates
 
-def when_encounter_truc(S, df):
+def when_encounter_truc(S, df, counting):
     """
     S: 1 set of coordinates
     Ex: S = (x, y) or S = (idx, col)
     """
 
     if df.loc[S] == "^":
-        df.loc[S[0], S[1]+1] = "|"
+        if df.loc[S[0], S[1]+1] != "|":
+            df.loc[S[0], S[1]+1] = "|"
+            counting += 1
     else:
         print(False)
 
     if df.loc[S] == "^":
-        df.loc[S[0], S[1]-1] = "|"
+        if df.loc[S[0], S[1]-1] != "|":
+            df.loc[S[0], S[1]-1] = "|"
+            counting += 1
     else:
         pass
 
-    return df
+    return df, counting
 
-def surround_truc_with_traits(df, coordinates):
+def surround_truc_with_traits(df, coordinates, counting):
     for i in range(len(coordinates)):
         A = (coordinates[i])
-        df = when_encounter_truc(A, df)
-    return df
+        df, counting = when_encounter_truc(A, df, counting)
+    return df, counting
 
-def go_straight(trait, df, sign="|"):
+def go_straight(trait, df, sign="|", counting=0):
     """
     Also to be considered at the start.
 
@@ -63,13 +67,15 @@ def go_straight(trait, df, sign="|"):
     """
 
     if df.loc[(trait[0]+1, trait[1])] != "^": #"== "." :
-        df.loc[(trait[0]+1, trait[1])] = sign
+        # if df.loc[(trait[0]+1, trait[1])] != sign:
+            df.loc[(trait[0]+1, trait[1])] = sign
+            # counting += 1
     else:
-        return df
+        return df, counting
 
-    return df
+    return df, counting
 
-def get_all_traits(df):
+def get_all_traits(df, counting):
     """
     Looping '_' iterations in order to create the traits
     if at (idx+1, col) != "^"
@@ -83,14 +89,14 @@ def get_all_traits(df):
         temp = len(trait_droit)
         for i in range(len(trait_droit)):
             if (trait_droit[i][0] != max_lines): # or (coord[1] != df.shape[1]):
-                df = go_straight(trait_droit[i], df, "|")
+                df, counting = go_straight(trait_droit[i], df, sign="|", counting=counting)
 
         trait_droit = get_coordinates(df, "|")
         if len(trait_droit) == temp:
             # print(f"break at {_} iterations")
             break
 
-    return df, trait_droit
+    return df, counting
 
 def get_surrounding_coordinates_truc(coord, df):
     """
@@ -133,6 +139,28 @@ def get_part_1(input_file="example_day_7.txt"):
     return df
 
 
+
+def get_part_2_test(input_file="example_day_7.txt"):
+
+    df = create_df(input_file)
+    counting = 0
+
+    S = get_coordinates(df, "S")[0]
+    df, counting = go_straight(S, df, counting)
+
+    coordinates = get_coordinates(df, "^")
+
+    df, counting = surround_truc_with_traits(df, coordinates, counting)
+    df, counting = get_all_traits(df, counting)
+
+
+    # count = 0
+    # for i in range(len(coordinates)):
+    #     c = get_surrounding_coordinates_truc(coordinates[i], df)
+    #     count += (c)
+
+    # print(count)
+    return counting
 
 # --------------- Part 2 --------------
 
@@ -238,7 +266,9 @@ def get_part_2(input_file="example_day_7.txt"):
 
     # df = create_df(input_file)
     df = get_part_1(input_file)
+    print("STEP 1 done - get part 1")
     coords = get_coordinates(df, "^")
+    print("STEP 2 done - get coordinates")
     start, ends = get_start_and_ends(coords, df)
     ends_final = []
     for coord in ends:
@@ -246,6 +276,7 @@ def get_part_2(input_file="example_day_7.txt"):
         ends_final.append((coord[0]+1, coord[1]))
 
     my_dict, G = draw_graph(df)
+    print("STEP 3 done - get graph")
     for col in range(df.shape[1]):
             if is_truc(df.shape[0]-2,col,df):
                 truc = (df.shape[0]-2,col)
@@ -253,6 +284,11 @@ def get_part_2(input_file="example_day_7.txt"):
                 if df.loc[df.shape[0]-1,col] == "|" :
                     G.add_edge(truc, (df.shape[0]-1,col))
 
+    print("STEP 4 done - get all final edges in graph")
+    # paths = get_paths(start, ends_final, G)
+
+
+    print("STEP 5 done - get paths for all final endpoint")
     paths = get_paths(start, ends_final, G)
     return paths
 
@@ -261,5 +297,5 @@ if __name__ == "__main__":
     # print("---"*3)
     # get_part_1("day_7.txt")
 
-    res = get_part_2()
+    res = get_part_2_test()
     print(res)
