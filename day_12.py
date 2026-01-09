@@ -53,7 +53,6 @@ def setting_up_perimeter_of_challenge(index, text_file = "example_day_12.txt"):
     gifts = get_gifts_shape(text_file)
     indexes_for_gifts, sizes_of_gifts = get_sizes_of_gifts(text_file)
 
-
     # Print the indexes of the gifts whose shape we will try to fit below the tree
     tmp_df = pd.DataFrame(indexes_for_gifts[index]).T
     print(tmp_df)
@@ -69,14 +68,19 @@ def setting_up_perimeter_of_challenge(index, text_file = "example_day_12.txt"):
     print(end="\n\n")
     # Print the shape of the tree available
     x,y = sizes_of_gifts[index]
-    print(pd.DataFrame([['.']*x]*y))
+    space_tree_df = (pd.DataFrame([['.']*x]*y))
+    print(space_tree_df)
     print()
 
+    nb_of_gifts_to_be_added = []
     # Print the look/shape of each gift
     for gift_idx in shapes:
+        nb_of_gifts_to_be_added.append(tmp_df.loc[0,gift_idx])
         print(f"{tmp_df.loc[0,gift_idx]} gift{"s" if tmp_df.loc[0,gift_idx]>1 else ""} of index {gift_idx}")
         print(pd.DataFrame(gifts[gift_idx]))
         print()
+
+    return sum(nb_of_gifts_to_be_added), space_tree_df
 
 
 if __name__ == "__main__":
