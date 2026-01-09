@@ -1,12 +1,14 @@
 import pandas as pd
-import math
+import networkx as nx
+import matplotlib.pyplot as plt
 
-my_input = open("example_day_7.txt", "r").read()
-new = my_input.split("\n")
 
 # --------------- My functions --------------
 
-def create_df(new):
+def create_df(input_file = "example_day_7.txt"):
+    my_input = open(input_file, "r").read()
+    new = my_input.split("\n")
+
     df = []
     for x in range(len(new)-1):
         temp = []
@@ -109,14 +111,10 @@ def get_surrounding_coordinates_truc(coord, df):
                 count+= 1
     return count
 
-# --------------- My code --------------
-
 # Part 1
-def get_part_1(day_7="example_day_7.txt"):
-    my_input = open(day_7, "r").read()
-    new = my_input.split("\n")
+def get_part_1(input_file="example_day_7.txt"):
 
-    df = create_df(new)
+    df = create_df(input_file)
 
     S = get_coordinates(df, "S")[0]
     df = go_straight(S, df)
@@ -133,10 +131,9 @@ def get_part_1(day_7="example_day_7.txt"):
         count += (c)
 
     print(count)
+    return df
 
-get_part_1()
-print("---"*3)
-get_part_1("day_7.txt")
+
 
 # Part 2
 
@@ -144,9 +141,110 @@ get_part_1("day_7.txt")
 # 6 : car 6 splitters in reality in example, if not consider that we always go left at the first one
 # et que we have 1 chance sur 2 d'aller à gauche ou bien à droite, hence "to the power of 2"
 
-# formule statistique probable existe, à trouver
-# lien possible avec les decisions trees
+def is_un_trait(idx, col, df):
+    return df.loc[(idx, col)] == "|"
 
-df = create_df(new)
-# get_coordinates(df)
-# print(df)
+def is_connected(idx, col, df):
+    if df.loc[idx, col] == "^":
+        return True
+
+
+def connections(df, coords):
+    my_dict = dict()
+
+    try:
+        for coord in coords:
+            idx, col = coord
+            temp = []
+            count_temp = 0
+
+            if df.loc[idx+2, col-1] == "^":
+                temp.append((idx+2, col-1))
+            else:
+                for i in range(idx+1, (df.shape[0])):
+                    if is_connected(i, col-1, df) == True:
+                        temp.append((i, col-1))
+                        # break
+
+                    elif is_connected(i, col-2, df) == True:
+                        temp.append((i, col-2))
+                        # break
+
+                """
+                (10,5) should be connected to (15,4)
+                """
+                print(count_temp)
+                if count_temp == (df.shape[0]) - (idx+1):
+                    temp.append((i, col-1))
+
+
+            if df.loc[idx+2, col+1] == "^":
+                temp.append((idx+2, col+1))
+            else:
+                for i in range(idx+1, (df.shape[0])):
+                    if is_connected(i, col+1, df) == True:
+                        temp.append((i, col+1))
+                        # break
+
+                    elif is_connected(i, col+2, df) == True:
+                        temp.append((i, col+2))
+                        # break
+
+            my_dict[(idx, col)] =  temp
+
+    except KeyError:
+        next
+
+    return my_dict
+
+def draw_graph(df):
+    coords = get_coordinates(df, "^")
+    G = nx.Graph()
+    my_dict = connections(df, coords)
+
+    for key, value in my_dict.items():
+        if isinstance(value, list):
+            for i in range(len(value)):
+                G.add_edge(key, value[i])
+        else:
+            G.add_edge(key, value[i])
+
+    """for col in range(df.shape[1]):
+        if is_connected(df.shape[0]-2,col):
+            truc = (df.shape[0]-2,col)
+
+            if df.loc[df.shape[0]-1,col] == "|" :
+                G.add_edge(truc, (df.shape[0]-1,col))"""
+
+    return my_dict, G
+
+def get_start_and_ends(coords, df):
+    start = coords[0]
+    ends = []
+
+    for col in range(df.shape[1]):
+        if df.loc[df.shape[0]-1,col] == "|" :
+            ends.append((df.shape[0]-1,col))
+
+    # for i in range(len(coords)):
+    #     if coords[i][0] == end_idx:
+    #         ends.append(coords[i])
+
+    # nx.draw(G, with_labels=True)
+    # plt.show()
+
+    return start, ends
+
+def get_paths(start, ends, G):
+    for i in range(len(ends)):
+        print(ends[i], end=": ")
+        print(len((list(nx.all_simple_paths(G, start, ends[i])))))
+        # if (len((list(nx.all_simple_paths(G, start, ends[i]))))) == 1:
+        #     print(((list(nx.all_simple_paths(G, start, ends[i])))))
+
+
+
+if __name__ == "__main__":
+    get_part_1()
+    print("---"*3)
+    get_part_1("day_7.txt")
