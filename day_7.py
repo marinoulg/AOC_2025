@@ -3,7 +3,7 @@ import networkx as nx
 import matplotlib.pyplot as plt
 
 
-# --------------- My functions --------------
+# --------------- Part 1 --------------
 
 def create_df(input_file = "example_day_7.txt"):
     my_input = open(input_file, "r").read()
@@ -111,7 +111,6 @@ def get_surrounding_coordinates_truc(coord, df):
                 count+= 1
     return count
 
-# Part 1
 def get_part_1(input_file="example_day_7.txt"):
 
     df = create_df(input_file)
@@ -135,11 +134,7 @@ def get_part_1(input_file="example_day_7.txt"):
 
 
 
-# Part 2
-
-# ordre de grandeur between (6**2) and (7**2)
-# 6 : car 6 splitters in reality in example, if not consider that we always go left at the first one
-# et que we have 1 chance sur 2 d'aller à gauche ou bien à droite, hence "to the power of 2"
+# --------------- Part 2 --------------
 
 def is_un_trait(idx, col, df):
     return df.loc[(idx, col)] == "|"
