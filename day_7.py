@@ -129,7 +129,7 @@ def get_part_1(input_file="example_day_7.txt"):
         c = get_surrounding_coordinates_truc(coordinates[i], df)
         count += (c)
 
-    print(count)
+    # print(count)
     return df
 
 
@@ -139,7 +139,7 @@ def get_part_1(input_file="example_day_7.txt"):
 def is_un_trait(idx, col, df):
     return df.loc[(idx, col)] == "|"
 
-def is_connected(idx, col, df):
+def is_truc(idx, col, df):
     if df.loc[idx, col] == "^":
         return True
 
@@ -157,34 +157,35 @@ def connections(df, coords):
                 temp.append((idx+2, col-1))
             else:
                 for i in range(idx+1, (df.shape[0])):
-                    if is_connected(i, col-1, df) == True:
-                        temp.append((i, col-1))
+                        if is_truc(i, col-1, df) == True:
+                            temp.append((i, col-1))
+                            # break
+
+                        elif is_truc(i, col-2, df) == True:
+                            temp.append((i, col-2))
                         # break
 
-                    elif is_connected(i, col-2, df) == True:
-                        temp.append((i, col-2))
-                        # break
-
-                """
-                (10,5) should be connected to (15,4)
-                """
-                print(count_temp)
-                if count_temp == (df.shape[0]) - (idx+1):
-                    temp.append((i, col-1))
+            """
+            (10,5) should be connected to (15,4)
+            """
+            # print(count_temp)
+            # if count_temp == (df.shape[0]) - (idx+1):
+            #         temp.append((i, col-1))
 
 
             if df.loc[idx+2, col+1] == "^":
                 temp.append((idx+2, col+1))
             else:
                 for i in range(idx+1, (df.shape[0])):
-                    if is_connected(i, col+1, df) == True:
+                    if is_truc(i, col+1, df) == True:
                         temp.append((i, col+1))
                         # break
 
-                    elif is_connected(i, col+2, df) == True:
+                    elif is_truc(i, col+2, df) == True:
                         temp.append((i, col+2))
                         # break
 
+            # print(temp)
             my_dict[(idx, col)] =  temp
 
     except KeyError:
@@ -194,7 +195,7 @@ def connections(df, coords):
 
 def draw_graph(df):
     coords = get_coordinates(df, "^")
-    G = nx.Graph()
+    G = nx.DiGraph()
     my_dict = connections(df, coords)
 
     for key, value in my_dict.items():
@@ -205,7 +206,7 @@ def draw_graph(df):
             G.add_edge(key, value[i])
 
     """for col in range(df.shape[1]):
-        if is_connected(df.shape[0]-2,col):
+        if is_truc(df.shape[0]-2,col):
             truc = (df.shape[0]-2,col)
 
             if df.loc[df.shape[0]-1,col] == "|" :
@@ -231,15 +232,42 @@ def get_start_and_ends(coords, df):
     return start, ends
 
 def get_paths(start, ends, G):
+    paths = []
     for i in range(len(ends)):
         print(ends[i], end=": ")
         print(len((list(nx.all_simple_paths(G, start, ends[i])))))
+        paths.append(len((list(nx.all_simple_paths(G, start, ends[i])))))
         # if (len((list(nx.all_simple_paths(G, start, ends[i]))))) == 1:
         #     print(((list(nx.all_simple_paths(G, start, ends[i])))))
 
+    return sum(paths)
 
+def get_part_2(input_file="example_day_7.txt"):
+
+    # df = create_df(input_file)
+    df = get_part_1(input_file)
+    coords = get_coordinates(df, "^")
+    start, ends = get_start_and_ends(coords, df)
+    ends_final = []
+    for coord in ends:
+        df.loc[coord[0]+1, coord[1]] = "^"
+        ends_final.append((coord[0]+1, coord[1]))
+
+    my_dict, G = draw_graph(df)
+    for col in range(df.shape[1]):
+            if is_truc(df.shape[0]-2,col,df):
+                truc = (df.shape[0]-2,col)
+
+                if df.loc[df.shape[0]-1,col] == "|" :
+                    G.add_edge(truc, (df.shape[0]-1,col))
+
+    paths = get_paths(start, ends_final, G)
+    return paths
 
 if __name__ == "__main__":
-    get_part_1()
-    print("---"*3)
-    get_part_1("day_7.txt")
+    # get_part_1()
+    # print("---"*3)
+    # get_part_1("day_7.txt")
+
+    res = get_part_2()
+    print(res)
