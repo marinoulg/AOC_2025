@@ -62,7 +62,7 @@ def go_straight(trait, df, sign="|"):
     trait_droit = get_coordinates(df, "|")
     """
 
-    if df.loc[(trait[0]+1, trait[1])] != "^": #"== "." :
+    if df.loc[(trait[0]+1, trait[1])] != "^":
         df.loc[(trait[0]+1, trait[1])] = sign
     else:
         return df
@@ -82,7 +82,7 @@ def get_all_traits(df):
     for _ in range(10):
         temp = len(trait_droit)
         for i in range(len(trait_droit)):
-            if (trait_droit[i][0] != max_lines): # or (coord[1] != df.shape[1]):
+            if (trait_droit[i][0] != max_lines):
                 df = go_straight(trait_droit[i], df, "|")
 
         trait_droit = get_coordinates(df, "|")
@@ -179,11 +179,6 @@ def connections(df, coords):
                 for i in range(idx+1, (df.shape[0])):
                         if is_truc(i, col-1, df) == True:
                             temp.append((i, col-1))
-                            # break
-
-                        # elif is_truc(i, col-2, df) == True:
-                        #     temp.append((i, col-2))
-                        # break
 
 
             if df.loc[idx+2, col+1] == "^":
@@ -192,13 +187,7 @@ def connections(df, coords):
                 for i in range(idx+1, (df.shape[0])):
                     if is_truc(i, col+1, df) == True:
                         temp.append((i, col+1))
-                        # break
 
-                    # elif is_truc(i, col+2, df) == True:
-                    #     temp.append((i, col+2))
-                        # break
-
-            # print(temp)
             my_dict[(idx, col)] =  temp
 
     except KeyError:
@@ -218,13 +207,6 @@ def draw_graph(df):
         else:
             G.add_edge(key, value[i])
 
-    """for col in range(df.shape[1]):
-        if is_truc(df.shape[0]-2,col):
-            truc = (df.shape[0]-2,col)
-
-            if df.loc[df.shape[0]-1,col] == "|" :
-                G.add_edge(truc, (df.shape[0]-1,col))"""
-
     return my_dict, G
 
 def get_start_and_ends(coords, df):
@@ -234,10 +216,6 @@ def get_start_and_ends(coords, df):
     for col in range(df.shape[1]):
         if df.loc[df.shape[0]-1,col] == "|" :
             ends.append((df.shape[0]-1,col))
-
-    # for i in range(len(coords)):
-    #     if coords[i][0] == end_idx:
-    #         ends.append(coords[i])
 
     # nx.draw(G, with_labels=True)
     # plt.show()
@@ -250,14 +228,11 @@ def get_paths(start, ends, G):
         print(ends[i], end=": ")
         print(len((list(nx.all_simple_paths(G, start, ends[i])))))
         paths.append(len((list(nx.all_simple_paths(G, start, ends[i])))))
-        # if (len((list(nx.all_simple_paths(G, start, ends[i]))))) == 1:
-        #     print(((list(nx.all_simple_paths(G, start, ends[i])))))
 
     return sum(paths)
 
 def get_part_2(input_file="example_day_7.txt"):
 
-    # df = create_df(input_file)
     df = get_part_1(input_file)
     print("STEP 1 done - get part 1")
     coords = get_coordinates(df, "^")
