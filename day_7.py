@@ -256,7 +256,7 @@ def get_part_2(input_file="example_day_7.txt"):
     # paths = get_paths(start, ends_final, G)
 
 
-    print("STEP 5 done - get paths for all final endpoint")
+    print("STEP 5 done - get paths for all final endpoints")
     paths = get_paths(start, ends_final, G)
     return paths
 
@@ -265,5 +265,5 @@ if __name__ == "__main__":
     # print("---"*3)
     # get_part_1("day_7.txt")
 
-    res = get_part_1()
+    res = get_part_2()
     print(res)

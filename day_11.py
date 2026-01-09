@@ -1,3 +1,6 @@
+import networkx as nx
+import matplotlib.pyplot as plt
+
 def recursive_temp(my_dict, key="svr"):
     """
     returns a list of lists (each new list is the child of a node, if comparing to a decision tree)
@@ -65,6 +68,43 @@ def answer_part_1(text_file= "example_day_11.txt", key="svr"):
 
 # ---------------- Part 2 ----------------
 
+def get_all_paths_from_svr_to_out(my_dict):
+
+    G = nx.DiGraph()
+
+    for i in range(len(list(my_dict.keys()))):
+        key = (list(my_dict.keys())[i])
+        for elem in my_dict[key]:
+            G.add_edge(key, elem)
+
+    from_svr_to_out = list(nx.all_simple_paths(G, "svr", "out"))
+    return from_svr_to_out
+
+def answer_part_2(text_file= "example_day_11_2.txt", key="svr"):
+
+    my_input = open(text_file, "r").read()
+    new = my_input.split("\n")[:-1]
+
+    my_dict = {}
+    for i in range(len(new)):
+        temp = (new[i].split(": "))
+        my_dict[temp[0]] = temp[1].split(" ")
+
+    from_svr_to_out = get_all_paths_from_svr_to_out(my_dict)
+
+    count = 0
+    for list_ in from_svr_to_out:
+        if "dac" in list_:
+            if "fft" in list_:
+                print(list_)
+                count+=1
+
+    return count
+
+
+# ---------------- Old code ----------------
+
+
 def get_tree_options(text_file= "example_day_11_p2.txt"):
 
     my_input = open(text_file, "r").read()
@@ -114,25 +154,25 @@ def get_nodes_after(tree):
     return nodes
 
 
-text_file= "example_day_11_p2.txt"
+# text_file= "example_day_11_p2.txt"
 
-my_input = open(text_file, "r").read()
-new = my_input.split("\n")[:-1]
+# my_input = open(text_file, "r").read()
+# new = my_input.split("\n")[:-1]
 
-my_dict = {}
-for i in range(len(new)):
-    temp = (new[i].split(": "))
-    my_dict[temp[0]] = temp[1].split(" ")
+# my_dict = {}
+# for i in range(len(new)):
+#     temp = (new[i].split(": "))
+#     my_dict[temp[0]] = temp[1].split(" ")
 
-tree = recursive_temp(my_dict, key="svr")
+# tree = recursive_temp(my_dict, key="svr")
 
-nodes = get_first_nodes(tree)
-print("nodes 1", nodes)
+# nodes = get_first_nodes(tree)
+# print("nodes 1", nodes)
 
-new_tree = tree.copy()
-for elem in new_tree:
-    if elem in nodes:
-        new_tree.remove(elem)
+# new_tree = tree.copy()
+# for elem in new_tree:
+#     if elem in nodes:
+#         new_tree.remove(elem)
 
-nodes = get_nodes_after(new_tree)
-print("nodes 2", nodes)
+# nodes = get_nodes_after(new_tree)
+# print("nodes 2", nodes)
