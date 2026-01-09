@@ -104,7 +104,6 @@ def answer_part_2(text_file= "example_day_11_2.txt", key="svr"):
 
 # ---------------- Old code ----------------
 
-
 def get_tree_options(text_file= "example_day_11_p2.txt"):
 
     my_input = open(text_file, "r").read()
