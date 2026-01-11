@@ -1,5 +1,6 @@
 import pandas as pd
 from time import time
+from collections import defaultdict
 
 def create_df(text_file="example_day_9.txt"):
     my_input = open(text_file, "r").read()
@@ -41,6 +42,106 @@ def answer_part_1(text_file="example_day_9.txt"):
 
 # ---------- Part 2 ----------
 
+def get_defaultdicts(coordinates):
+
+    dict_x = defaultdict(set)
+    dict_y = defaultdict(set)
+
+    for x, y in coordinates:
+        # print(x,y)
+        dict_x[x].add((y))
+        dict_y[y].add((x))
+
+    return dict_x, dict_y
+
+def surround_figure(dict_x, dict_y):
+    """
+    because we are talking about corners here, it is necessary a set of
+    2 coordinates at a time that interest us
+
+    need to find a way to not just surround the figure but fill it in,
+    taking into account that the total of "x"s are not necessarily %2 == 0
+    """
+    surroundings = []
+
+    for y in dict_y:
+        for i in range(len(dict_y[y])):
+            if i%2 == 0:
+                a,b = sorted(list(dict_y[y]))[0+i:2+i]
+                for i in range(a+1,b):
+                    surroundings.append((i,y))
+                    # df.loc[(i,y)] = "x"
+            elif i%2 != 0 and i == len(dict_y[y]):
+                """
+                WIP: might be something like this
+                """
+                pass
+
+    for x in dict_x:
+        for i in range(len(dict_x[x])):
+            if i%2 == 0:
+                a,b = sorted(list(dict_x[x]))[0+i:2+i]
+                for i in range(a+1,b):
+                    surroundings.append((x,i))
+                    # df.loc[(x, i)] = "x"
+
+
+    return surroundings
+
+def all_corners_possible(corner_1, corner_2, dict_x, dict_y, croix_x, croix_y):
+    """
+    intermediary function that checks:
+        est-ce que mes 4 coins de rectangle sont soit un "#" soit un "x"
+    """
+    a,b = corner_1
+    c,d = corner_2
+
+    if b in dict_x[a] or b in croix_x[a]:
+        if d in dict_x[a] or d in croix_x[a]:
+
+            if a in dict_y[b] or a in croix_y[b]:
+                if c in dict_y[b] or c in croix_y[b]:
+                        # print(corner_1, corner_2)
+                        return True
+
+def part2_WIP(text_file="example_day_9.txt"):
+    coordinates = create_df(text_file)
+    dict_x, dict_y = get_defaultdicts(coordinates)
+    surroundings = surround_figure(dict_x, dict_y)
+    croix_x, croix_y = get_defaultdicts(surroundings)
+
+    #  si je teste deux paires de coordonnées :
+        #  est-ce que mes 4 coins de rectangle sont soit un "#" soit un "x"
+            #  si oui, est-ce que j'ai au moins un autre "#" dans le périmètre de mon rectangle ?
+            #  si non, rectangle possible
+                #  si oui, rectangle impossible --> pas toujours : contre-exemple (1,7) et (5,9)
+
+    # Rq : partir des biggest rectangles identified in part 1 ?
+
+    """
+    cette partie là ne fonctionne pas encore
+    """
+
+    for idx in range(len(coordinates)):
+        a,b = coordinates[idx]
+
+        for i in range(len(coordinates)):
+            c,d = coordinates[i]
+
+            corner_1 = a,b
+            corner_2 = c,d
+
+            # corner_3 = (a,d)
+            # corner_4 = (b,c)
+
+            first_phase = []
+
+            #  FIRST PHASE : est-ce que mes 4 coins de rectangle sont soit un "#" soit un "x"
+            if all_corners_possible(corner_1, corner_2, dict_x, dict_y, croix_x, croix_y):
+                pass
+
+
+"""
 def to_visualise(text_file = "example_day_9.txt"):
 
     coordinates = create_df(text_file)
@@ -151,3 +252,4 @@ now = (time())
 print(answer_part_2("day_9.txt"))
 end = time()
 print(end-now)
+"""
