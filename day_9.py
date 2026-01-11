@@ -118,6 +118,8 @@ def all_corners_possible(corner_1, corner_2, dict_x, dict_y, croix_x, croix_y):
     """
     intermediary function that checks:
         est-ce que mes 4 coins de rectangle sont soit un "#" soit un "x"
+
+    attention: only works if croix_x and croix_y are complete!
     """
     a,b = corner_1
     c,d = corner_2
@@ -130,21 +132,7 @@ def all_corners_possible(corner_1, corner_2, dict_x, dict_y, croix_x, croix_y):
                         # print(corner_1, corner_2)
                         return True
 
-def filling_in_figure(text_file="example_day_9.txt"):
-
-    coordinates = create_df(text_file)
-    print("step 1 - coordinates created")
-
-    dict_x = defaultdict(set)
-    dict_y = defaultdict(set)
-    dict_x, dict_y = get_defaultdicts(coordinates,dict_x, dict_y)
-    print("step 2 - default dicts dict_x and dict_y created")
-
-    surroundings = surround_figure(dict_x, dict_y)
-    print("step 3 - surroundings created")
-
-    croix_x, croix_y = get_defaultdicts(surroundings, dict_x, dict_y)
-    print("step 4 - default dicts croix_x and croix_y created, filling in figure now")
+def filling_in_figure(croix_x, croix_y):
 
     surrs = surround_figure(croix_x, croix_y)
     for elem in surrs:
@@ -153,7 +141,7 @@ def filling_in_figure(text_file="example_day_9.txt"):
         croix_y[y].add(x)
     print("step 5 - figure has been filled in")
 
-    return coordinates, croix_x, croix_y
+    return surrs
 
 def is_possible(coords1, coords2, croix_x, croix_y):
     a,b = coords1
@@ -189,15 +177,20 @@ def is_possible(coords1, coords2, croix_x, croix_y):
         if y not in croix_x[max_a_c]:
             return False
 
-    else:
-        return True
-
+    return True
 
 def part2(text_file="example_day_9.txt"):
 
-    coordinates, croix_x, croix_y = filling_in_figure(text_file)
-    print("step 6 - default dicts dict_x and dict_y created (again)")
-    dict_x, dict_y = get_defaultdicts(coordinates)
+    coordinates = create_df(text_file)
+    dict_x = defaultdict(set)
+    dict_y = defaultdict(set)
+    dict_x, dict_y = get_defaultdicts(coordinates,dict_x, dict_y)
+    surroundings = surround_figure(dict_x, dict_y)
+
+    croix_x, croix_y = get_defaultdicts(surroundings, dict_x, dict_y)
+    print("step 4 - default dicts croix_x and croix_y created, filling in figure now")
+
+    surrs = filling_in_figure(croix_x, croix_y)
 
     big = 0
     biggest_coords = defaultdict(list)
@@ -223,7 +216,7 @@ def part2(text_file="example_day_9.txt"):
                 if all_corners_possible(corner_1, corner_2, dict_x, dict_y, croix_x, croix_y):
 
                     # SECOND PHASE : vérifier que mon rectangle est malgré tout possible`
-                    if is_possible((a,b), (c,d), croix_x, croix_y):
+                    if is_possible(corner_1, corner_2, croix_x, croix_y) == True:
                         # THIRD PHASE : calculer l'aire de mon rectangle
                         longueur = abs((a+1)-(c+1))+1
                         largeur = abs((b+1)-(d+1))+1
@@ -231,8 +224,8 @@ def part2(text_file="example_day_9.txt"):
                             big = largeur*longueur
                             biggest_coords[big].append([(a, b), (c, d)])
 
-    return max(biggest_coords)
+    return (biggest_coords)
 
 
 if __name__ == "__main__":
-    part2("day_9.txt")
+    print(part2())
