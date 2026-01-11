@@ -1,6 +1,8 @@
 import pandas as pd
 from time import time
 from collections import defaultdict
+import numpy as np
+import tqdm
 
 def create_df(text_file="example_day_9.txt"):
     my_input = open(text_file, "r").read()
@@ -44,48 +46,70 @@ def answer_part_1(text_file="example_day_9.txt"):
 
 # ---------- Part 2 ----------
 
-def get_defaultdicts(coordinates):
+def get_defaultdicts(coordinates, dict_x = defaultdict(set), dict_y = defaultdict(set)):
 
-    dict_x = defaultdict(set)
-    dict_y = defaultdict(set)
+    copy_dict_x = dict_x.copy()
+    copy_dict_y = dict_y.copy()
 
     for x, y in coordinates:
         # print(x,y)
-        dict_x[x].add((y))
-        dict_y[y].add((x))
+        copy_dict_x[x].add((y))
+        copy_dict_y[y].add((x))
 
-    return dict_x, dict_y
+    return copy_dict_x, copy_dict_y
 
 def surround_figure(dict_x, dict_y):
     """
     because we are talking about corners here, it is necessary a set of
     2 coordinates at a time that interest us
-
-    need to find a way to not just surround the figure but fill it in,
-    taking into account that the total of "x"s are not necessarily %2 == 0
+    filled_in figure!
     """
+
     surroundings = []
 
-    for y in dict_y:
+    for y in tqdm.tqdm(dict_y):
         for i in range(len(dict_y[y])):
-            if i%2 == 0:
-                a,b = sorted(list(dict_y[y]))[0+i:2+i]
-                for i in range(a+1,b):
-                    surroundings.append((i,y))
-                    # df.loc[(i,y)] = "x"
-            elif i%2 != 0 and i == len(dict_y[y]):
-                """
-                WIP: might be something like this
-                """
-                pass
+            list_tmp = sorted(list(dict_y[y]))
 
-    for x in dict_x:
+            if len(dict_y[y])%2 == 0:
+                if i%2 == 0 and list_tmp[i] != list_tmp[-1]:
+                    a,b = (list_tmp)[0+i:2+i]
+                    # print(y, a,b)
+                    for i in range(a+1,b):
+                        surroundings.append((i,y))
+            elif len(dict_y[y])%2 == 1:
+                    # print((list_tmp))
+                    # print(i)
+                    a = (list_tmp)[i]
+
+                    if a != list_tmp[-1]:
+                        b = (list_tmp)[i+1]
+                        # print(y, end=": ")
+                        # print(a,b)
+                        for i in range(a+1,b):
+                            surroundings.append((i,y))
+
+    for x in tqdm.tqdm(dict_x):
         for i in range(len(dict_x[x])):
-            if i%2 == 0:
-                a,b = sorted(list(dict_x[x]))[0+i:2+i]
-                for i in range(a+1,b):
-                    surroundings.append((x,i))
-                    # df.loc[(x, i)] = "x"
+            list_tmp = sorted(list(dict_x[x]))
+
+            if len(dict_x[x])%2 == 0:
+                if i%2 == 0:
+                    a,b = list_tmp[0+i:2+i]
+                    for i in range(a+1,b):
+                        surroundings.append((x,i))
+
+            elif len(dict_x[x])%2 == 1:
+                    # print((list_tmp))
+                    # print(i)
+                    a = (list_tmp)[i]
+
+                    if a != list_tmp[-1]:
+                        b = (list_tmp)[i+1]
+                        # print(x, end=": ")
+                        # print(a,b)
+                        for i in range(a+1,b):
+                            surroundings.append((x,i))
 
 
     return surroundings
@@ -106,11 +130,73 @@ def all_corners_possible(corner_1, corner_2, dict_x, dict_y, croix_x, croix_y):
                         # print(corner_1, corner_2)
                         return True
 
-def part2_WIP(text_file="example_day_9.txt"):
+def filling_in_figure(text_file="example_day_9.txt"):
     coordinates = create_df(text_file)
-    dict_x, dict_y = get_defaultdicts(coordinates)
+    print("step 1")
+    dict_x = defaultdict(set)
+    dict_y = defaultdict(set)
+
+    dict_x, dict_y = get_defaultdicts(coordinates,dict_x, dict_y)
+    print("step 2")
     surroundings = surround_figure(dict_x, dict_y)
-    croix_x, croix_y = get_defaultdicts(surroundings)
+    print("step 3")
+    croix_x, croix_y = get_defaultdicts(surroundings, dict_x, dict_y)
+    print("step 4")
+    surrs = surround_figure(croix_x, croix_y)
+    for elem in surrs:
+        x,y = (elem)
+        croix_x[x].add(y)
+        croix_y[y].add(x)
+
+    return coordinates, croix_x, croix_y
+
+def is_possible(coords1, coords2, croix_x, croix_y):
+    a,b = coords1
+    c,d = coords2
+
+    min_b_d = min(b,d)
+    max_b_d = max(b,d)
+    min_a_c = min(a,c)
+    max_a_c = max(a,c)
+
+    corner_1 = min_a_c,min_b_d
+    corner_2 = min_a_c,max_b_d
+    corner_3 = max_a_c,max_b_d
+    corner_4 = max_a_c,min_b_d
+
+    # 1 ----------- 2 #
+    # |             |
+    # |             |
+    # |             |
+    # |             |
+    # 4 ----------- 3 #
+
+    # on descend
+    for x in range(min_a_c, max_a_c+1):
+        if x not in croix_y[min_b_d]:
+            return False
+
+    for x in range(min_a_c, max_a_c+1):
+        if x not in croix_y[max_b_d]:
+            return False
+
+    # de gauche à droite
+    for y in range(min_b_d, max_b_d+1):
+        if y not in croix_x[min_a_c]:
+            return False
+
+    for y in range(min_b_d, max_b_d+1):
+        if y not in croix_x[max_a_c]:
+            return False
+
+    else:
+        return True
+
+
+def part2_WIP(text_file="example_day_9.txt"):
+
+    coordinates, croix_x, croix_y = filling_in_figure(text_file)
+    dict_x, dict_y = get_defaultdicts(coordinates)
 
     #  si je teste deux paires de coordonnées :
         #  est-ce que mes 4 coins de rectangle sont soit un "#" soit un "x"
@@ -149,8 +235,16 @@ def part2_WIP(text_file="example_day_9.txt"):
         for i in range(len(coordinates)):
             c,d = coordinates[i]
 
-            corner_1 = a,b
-            corner_2 = c,d
+            min_b_d = min(b,d)
+            max_b_d = max(b,d)
+            min_a_c = min(a,c)
+            max_a_c = max(a,c)
+
+            corner_1 = min_a_c,min_b_d
+            corner_2 = min_a_c,max_b_d
+
+            corner_3 = max_a_c,max_b_d
+            corner_4 = max_a_c,min_b_d
 
             # ZERO PHASE : est-ce que j'ai bien un rectangle, et pas une ligne ou un point
             if a != b and c != d and (a,b) != (c,d) and a != c and b != d:
@@ -158,16 +252,17 @@ def part2_WIP(text_file="example_day_9.txt"):
                 #  FIRST PHASE : est-ce que mes 4 coins de rectangle sont soit un "#" soit un "x"
                 if all_corners_possible(corner_1, corner_2, dict_x, dict_y, croix_x, croix_y):
 
-                    # SECOND PHASE : vérifier que mon rectangle est malgré tout possible
-                    """
-                    WIP
-                    """
-
-                    # THIRD PHASE : calculer l'aire de mon rectangle
-                    longueur = abs((a+1)-(c+1))+1
-                    largeur = abs((b+1)-(d+1))+1
-                    if big <= largeur*longueur:
-                        big = largeur*longueur
-                        biggest_coords[big].append([(a, b), (c, d)])
+                    # SECOND PHASE : vérifier que mon rectangle est malgré tout possible`
+                    if is_possible((a,b), (c,d), croix_x, croix_y):
+                        # THIRD PHASE : calculer l'aire de mon rectangle
+                        longueur = abs((a+1)-(c+1))+1
+                        largeur = abs((b+1)-(d+1))+1
+                        if big <= largeur*longueur:
+                            big = largeur*longueur
+                            biggest_coords[big].append([(a, b), (c, d)])
 
     return biggest_coords
+
+
+if __name__ == "__main__":
+    part2_WIP()
