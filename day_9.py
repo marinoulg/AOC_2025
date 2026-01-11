@@ -131,22 +131,27 @@ def all_corners_possible(corner_1, corner_2, dict_x, dict_y, croix_x, croix_y):
                         return True
 
 def filling_in_figure(text_file="example_day_9.txt"):
+
     coordinates = create_df(text_file)
-    print("step 1")
+    print("step 1 - coordinates created")
+
     dict_x = defaultdict(set)
     dict_y = defaultdict(set)
-
     dict_x, dict_y = get_defaultdicts(coordinates,dict_x, dict_y)
-    print("step 2")
+    print("step 2 - default dicts dict_x and dict_y created")
+
     surroundings = surround_figure(dict_x, dict_y)
-    print("step 3")
+    print("step 3 - surroundings created")
+
     croix_x, croix_y = get_defaultdicts(surroundings, dict_x, dict_y)
-    print("step 4")
+    print("step 4 - default dicts croix_x and croix_y created, filling in figure now")
+
     surrs = surround_figure(croix_x, croix_y)
     for elem in surrs:
-        x,y = (elem)
+        x,y = elem
         croix_x[x].add(y)
         croix_y[y].add(x)
+    print("step 5 - figure has been filled in")
 
     return coordinates, croix_x, croix_y
 
@@ -158,11 +163,6 @@ def is_possible(coords1, coords2, croix_x, croix_y):
     max_b_d = max(b,d)
     min_a_c = min(a,c)
     max_a_c = max(a,c)
-
-    corner_1 = min_a_c,min_b_d
-    corner_2 = min_a_c,max_b_d
-    corner_3 = max_a_c,max_b_d
-    corner_4 = max_a_c,min_b_d
 
     # 1 ----------- 2 #
     # |             |
@@ -193,43 +193,16 @@ def is_possible(coords1, coords2, croix_x, croix_y):
         return True
 
 
-def part2_WIP(text_file="example_day_9.txt"):
+def part2(text_file="example_day_9.txt"):
 
     coordinates, croix_x, croix_y = filling_in_figure(text_file)
+    print("step 6 - default dicts dict_x and dict_y created (again)")
     dict_x, dict_y = get_defaultdicts(coordinates)
 
-    #  si je teste deux paires de coordonnées :
-        #  est-ce que mes 4 coins de rectangle sont soit un "#" soit un "x"
-            #  si oui, est-ce que j'ai au moins un autre "#" dans le périmètre de mon rectangle ?
-            #  si non, rectangle possible
-                #  si oui, rectangle *impossible* --> pas toujours : contre-exemple (1,7) et (5,9)
-                    # for elem in range(b+1,d-1):
-                    #     if elem in dict_x[a]:
-                    #         break
-                    # else:
-                    #     for elem in range(b+1,d-1):
-                    #         if elem in dict_x[c]:
-                    #             break
-                    #     else:
-                    #         for elem in range(a+1,c-1):
-                    #             if elem in dict_y[d]:
-                    #                 break
-                    #         else:
-                    #             for elem in range(a+1,c-1):
-                    #                 if elem in dict_y[b]:
-                    #                     break
-                    #             else:
-                    #                 print('ok possible rectangle')
-
-    # Rq : partir des biggest rectangles identified in part 1 ?
-
-    """
-    cette partie là ne fonctionne pas encore
-    """
     big = 0
     biggest_coords = defaultdict(list)
 
-    for idx in range(len(coordinates)):
+    for idx in tqdm.tqdm(range(len(coordinates))):
         a,b = coordinates[idx]
 
         for i in range(len(coordinates)):
@@ -242,9 +215,6 @@ def part2_WIP(text_file="example_day_9.txt"):
 
             corner_1 = min_a_c,min_b_d
             corner_2 = min_a_c,max_b_d
-
-            corner_3 = max_a_c,max_b_d
-            corner_4 = max_a_c,min_b_d
 
             # ZERO PHASE : est-ce que j'ai bien un rectangle, et pas une ligne ou un point
             if a != b and c != d and (a,b) != (c,d) and a != c and b != d:
@@ -261,8 +231,8 @@ def part2_WIP(text_file="example_day_9.txt"):
                             big = largeur*longueur
                             biggest_coords[big].append([(a, b), (c, d)])
 
-    return biggest_coords
+    return max(biggest_coords)
 
 
 if __name__ == "__main__":
-    part2_WIP()
+    part2("day_9.txt")
