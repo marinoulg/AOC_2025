@@ -61,9 +61,8 @@ def surround_figure(dict_x, dict_y):
     """
     because we are talking about corners here, it is necessary a set of
     2 coordinates at a time that interest us
-    filled_in figure!
-    """
 
+    """
     surroundings = []
 
     for y in tqdm.tqdm(dict_y):
@@ -75,9 +74,9 @@ def surround_figure(dict_x, dict_y):
                     a,b = (list_tmp)[0+i:2+i]
                     for i in range(a+1,b):
                         surroundings.append((i,y))
+
             elif len(dict_y[y])%2 == 1:
                     a = (list_tmp)[i]
-
                     if a != list_tmp[-1]:
                         b = (list_tmp)[i+1]
                         for i in range(a+1,b):
@@ -95,12 +94,10 @@ def surround_figure(dict_x, dict_y):
 
             elif len(dict_x[x])%2 == 1:
                     a = (list_tmp)[i]
-
                     if a != list_tmp[-1]:
                         b = (list_tmp)[i+1]
                         for i in range(a+1,b):
                             surroundings.append((x,i))
-
 
     return surroundings
 
@@ -117,30 +114,28 @@ def all_corners_possible(corner_1, corner_2, dict_x, dict_y, croix_x, croix_y):
 
             if a in dict_y[b] or a in croix_y[b]:
                 if c in dict_y[b] or c in croix_y[b]:
-                        # print(corner_1, corner_2)
+
                         return True
+    return False
 
-def filling_in_figure(text_file="example_day_9.txt"):
-    coordinates = create_df(text_file)
-    print("step 1")
-    dict_x = defaultdict(set)
-    dict_y = defaultdict(set)
+def filling_in_figure(croix_x, croix_y):
+    """
+    filled in figure!
+    """
 
-    dict_x, dict_y = get_defaultdicts(coordinates,dict_x, dict_y)
-    print("step 2")
-    surroundings = surround_figure(dict_x, dict_y)
-    print("step 3")
-    croix_x, croix_y = get_defaultdicts(surroundings, dict_x, dict_y)
-    print("step 4")
     surrs = surround_figure(croix_x, croix_y)
-    for elem in surrs:
+    for elem in tqdm.tqdm(surrs):
         x,y = (elem)
         croix_x[x].add(y)
         croix_y[y].add(x)
 
-    return coordinates, croix_x, croix_y
+    return croix_x, croix_y
 
 def is_possible(coords1, coords2, croix_x, croix_y):
+    """
+    intermediary function that checks:
+        est-ce que mes 4 arrêtes de rectangle sont soit un "#" soit un "x"
+    """
     a,b = coords1
     c,d = coords2
 
@@ -162,20 +157,20 @@ def is_possible(coords1, coords2, croix_x, croix_y):
     # 4 ----------- 3 #
 
     # on descend
-    for x in range(min_a_c, max_a_c+1):
+    for x in tqdm.tqdm(range(min_a_c, max_a_c+1)):
         if x not in croix_y[min_b_d]:
             return False
 
-    for x in range(min_a_c, max_a_c+1):
+    for x in tqdm.tqdm(range(min_a_c, max_a_c+1)):
         if x not in croix_y[max_b_d]:
             return False
 
     # de gauche à droite
-    for y in range(min_b_d, max_b_d+1):
+    for y in tqdm.tqdm(range(min_b_d, max_b_d+1)):
         if y not in croix_x[min_a_c]:
             return False
 
-    for y in range(min_b_d, max_b_d+1):
+    for y in tqdm.tqdm(range(min_b_d, max_b_d+1)):
         if y not in croix_x[max_a_c]:
             return False
 
@@ -184,14 +179,27 @@ def is_possible(coords1, coords2, croix_x, croix_y):
 
 
 def part2(text_file="example_day_9.txt"):
+    coordinates = create_df(text_file)
+    print("step 1 - coordinates created")
 
-    coordinates, croix_x, croix_y = filling_in_figure(text_file)
-    dict_x, dict_y = get_defaultdicts(coordinates)
+    dict_x = defaultdict(set)
+    dict_y = defaultdict(set)
+    dict_x, dict_y = get_defaultdicts(coordinates,dict_x, dict_y)
+    print("step 2 - default dicts dict_x and dict_y created")
+
+    surroundings = surround_figure(dict_x, dict_y)
+    print("step 3 - surroundings created")
+
+    croix_x, croix_y = get_defaultdicts(surroundings, dict_x, dict_y)
+    print("step 4 - default dicts croix_x and croix_y created, filling in figure now")
+
+    croix_x, croix_y = filling_in_figure(croix_x, croix_y)
+    print("step 5 - figure has been filled in")
 
     big = 0
     biggest_coords = defaultdict(list)
 
-    for idx in range(len(coordinates)):
+    for idx in tqdm.tqdm(range(len(coordinates))):
         a,b = coordinates[idx]
 
         for i in range(len(coordinates)):
@@ -200,13 +208,9 @@ def part2(text_file="example_day_9.txt"):
             min_b_d = min(b,d)
             max_b_d = max(b,d)
             min_a_c = min(a,c)
-            max_a_c = max(a,c)
 
             corner_1 = min_a_c,min_b_d
             corner_2 = min_a_c,max_b_d
-
-            corner_3 = max_a_c,max_b_d
-            corner_4 = max_a_c,min_b_d
 
             # ZERO PHASE : est-ce que j'ai bien un rectangle, et pas une ligne ou un point
             if a != b and c != d and (a,b) != (c,d) and a != c and b != d:
@@ -227,4 +231,4 @@ def part2(text_file="example_day_9.txt"):
 
 
 if __name__ == "__main__":
-    part2()
+    part2("day_9.txt")
