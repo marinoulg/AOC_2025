@@ -1,7 +1,6 @@
-import pandas as pd
-from time import time
+import pandas as pd # used as visualising tool, not in code
+import numpy as np # used in visualising tool, not in code
 from collections import defaultdict
-import numpy as np
 import tqdm
 
 def create_df(text_file="example_day_9.txt"):
@@ -46,6 +45,60 @@ def answer_part_1(text_file="example_day_9.txt"):
 
 # ---------- Part 2 ----------
 
+def visualising_help(text_file="example_day_9.txt",
+                     croix_x= defaultdict(set), croix_y= defaultdict(set), surrs = list()):
+
+    """
+    Visualising tool for me
+
+
+    How to use:
+
+        coordinates = create_df()
+
+        dict_x = defaultdict(set)
+        dict_y = defaultdict(set)
+        dict_x, dict_y = get_defaultdicts(coordinates,dict_x, dict_y)
+        print("step 2 - default dicts dict_x and dict_y created")
+
+        surroundings = surround_figure(dict_x, dict_y)
+        print("step 3 - surroundings created")
+
+        croix_x, croix_y = get_defaultdicts(surroundings, dict_x, dict_y)
+        print("step 4 - default dicts croix_x and croix_y created, filling in figure now")
+
+        croix_x, croix_y = filling_in_figure(croix_x, croix_y) # can be commented out
+        # surrs = surround_figure(croix_x, croix_y) # can be commented out
+
+        visualising_help(text_file="example_day_9.txt",
+                            croix_x=croix_x, croix_y=croix_y
+                            # , surrs=surrs
+                            # )
+    """
+
+    df = pd.DataFrame()
+    coordinates = create_df(text_file)
+
+    if croix_x and croix_y:
+        for x in croix_x:
+            for y in croix_x[x]:
+                df.loc[(x,y)] = "x"
+
+        for y in croix_y:
+            for x in croix_y[y]:
+                df.loc[(x,y)] = "x"
+
+    if surrs:
+        for x,y in surrs:
+            df.loc[x,y] = "x"
+
+    for x,y in coordinates:
+        df.loc[x,y] = "#"
+
+    df = df.replace(np.nan, ".")
+    df = df.sort_index().sort_index(axis=1)
+    return df
+
 def get_defaultdicts(coordinates, dict_x = defaultdict(set), dict_y = defaultdict(set)):
 
     copy_dict_x = dict_x.copy()
@@ -61,7 +114,6 @@ def surround_figure(dict_x, dict_y):
     """
     because we are talking about corners here, it is necessary a set of
     2 coordinates at a time that interest us
-
     """
     surroundings = []
 
@@ -149,12 +201,12 @@ def is_possible(coords1, coords2, croix_x, croix_y):
     # corner_3 = max_a_c,max_b_d
     # corner_4 = max_a_c,min_b_d
 
-    # 1 ----------- 2 #
+    # c1 ----------- c2 #
     # |             |
     # |             |
     # |             |
     # |             |
-    # 4 ----------- 3 #
+    # c4 ----------- c3 #
 
     # on descend
     for x in tqdm.tqdm(range(min_a_c, max_a_c+1)):
@@ -179,6 +231,10 @@ def is_possible(coords1, coords2, croix_x, croix_y):
 
 
 def part2(text_file="example_day_9.txt"):
+    """
+    putting it all together
+    """
+
     coordinates = create_df(text_file)
     print("step 1 - coordinates created")
 
