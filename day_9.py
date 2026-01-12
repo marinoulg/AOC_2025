@@ -1,5 +1,5 @@
-import pandas as pd # used as visualising tool, not in code
-import numpy as np # used in visualising tool, not in code
+# import pandas as pd # used as visualising tool, not in code
+# import numpy as np # used in visualising tool, not in code
 from collections import defaultdict
 import tqdm
 
@@ -101,14 +101,11 @@ def visualising_help(text_file="example_day_9.txt",
 
 def get_defaultdicts(coordinates, dict_x = defaultdict(set), dict_y = defaultdict(set)):
 
-    copy_dict_x = dict_x.copy()
-    copy_dict_y = dict_y.copy()
-
     for x, y in coordinates:
-        copy_dict_x[x].add((y))
-        copy_dict_y[y].add((x))
+        dict_x[x].add((y))
+        dict_y[y].add((x))
 
-    return copy_dict_x, copy_dict_y
+    return dict_x, dict_y
 
 def surround_figure(dict_x, dict_y):
     """
@@ -117,6 +114,7 @@ def surround_figure(dict_x, dict_y):
     """
     surroundings = []
 
+    print("for y")
     for y in tqdm.tqdm(dict_y):
         for i in range(len(dict_y[y])):
             list_tmp = sorted(list(dict_y[y]))
@@ -133,7 +131,9 @@ def surround_figure(dict_x, dict_y):
                         b = (list_tmp)[i+1]
                         for i in range(a+1,b):
                             surroundings.append((i,y))
+            del list_tmp
 
+    print("for x")
     for x in tqdm.tqdm(dict_x):
         for i in range(len(dict_x[x])):
             list_tmp = sorted(list(dict_x[x]))
@@ -150,6 +150,7 @@ def surround_figure(dict_x, dict_y):
                         b = (list_tmp)[i+1]
                         for i in range(a+1,b):
                             surroundings.append((x,i))
+            del list_tmp
 
     return surroundings
 
@@ -180,6 +181,8 @@ def filling_in_figure(croix_x, croix_y):
         x,y = (elem)
         croix_x[x].add(y)
         croix_y[y].add(x)
+        del x
+        del y
 
     return croix_x, croix_y
 
